@@ -1,0 +1,477 @@
+<div class="main-content">
+
+  <div class="cabecera">
+    <!--<mat-icon>code</mat-icon>Subir XML
+    {{this.listModelosTemp | json}}-->
+    <table>
+      <tr>
+        <td>
+          <button class="MyButton"  type="button" (click)="reagrupaIOnventario(1)" ><mat-icon class="material-icons color_white">group_work</mat-icon>VIN</button>
+      </td>
+      <td>
+        <button  class="MyButton"  type="button" (click)="reagrupaIOnventario(2)" ><mat-icon class="material-icons color_white">group_work</mat-icon>Clas. corporativa</button>
+      </td>
+      <td>
+        <button  class="MyButton"  type="button" (click)="reagrupaIOnventario(3)" ><mat-icon class="material-icons color_white">group_work</mat-icon>Antigüedad</button>
+      </td>
+      <td>
+        <button class="MyButton"  type="button" (click)="buscadatos()" ><mat-icon class="material-icons" style="color:black;">loop</mat-icon>Recargar inventario</button>
+      </td>
+      <td>
+        <button *ngIf="intTipoBusqueda == 1"  (click)="ExportTOExcelUnidades()" type="button" class="MyButton"  data-toggle="modal"><mat-icon class="material-icons" style="color:green;">calculate</mat-icon>Excel</button>
+      </td>
+    </tr>
+    </table>
+    
+    
+      
+      
+      
+    
+    <hr>
+  </div>
+  
+  
+    <table style="overflow:hidden;">
+      <tr>
+        <td style="width:15%;background-color: rgb(136, 139, 149); vertical-align: top; color: white;"  >
+          <div class="contenedor" style="vertical-align:top;">
+            <table style="border-collapse: separate; border-spacing: 20px 20px 20px 20px;">
+              <tr>
+                <td>
+                  Inventario
+                </td>
+              </tr>
+              <tr>
+                <hr>
+              </tr>
+              <tr>
+                <td >
+         
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+    
+                </td>
+              </tr>
+            </table>
+          </div>
+        </td>
+        <td style="width:85%">
+          <div class="table">
+            <div class="container-fluid"  style="overflow-y:scroll;">
+              <table>
+                <tr>
+                  
+                </tr>
+                <tr>
+                  <td><button *ngIf="intTipoBusqueda == 2" class="MyButton"  type="button" (click)="expandeContrae(1)" ><mat-icon class="material-icons color_white">reorder</mat-icon>Expandir todo</button></td>
+                  <td><button *ngIf="intTipoBusqueda == 2" class="MyButton"  type="button" (click)="expandeContrae(2)" ><mat-icon class="material-icons color_white">list</mat-icon>Contraer todo</button></td>
+
+                  <td><input *ngIf="intTipoBusqueda == 1" matInput placeholder="Búsqueda" id="idBusquedaVIN" name="idBusquedaVIN" class="form-control"  [(ngModel)]="vinBus"></td>
+                  <td>
+                    <form  #formActivationRequestSearch="ngForm">
+                      <input *ngIf="intTipoBusqueda == 2" (change)="buscaPorAntiguedad(20,1,' ', ' ',formActivationRequestSearch)" matInput placeholder="Búsqueda" id="formBusqueda" name="formBusqueda" class="form-control"  [(ngModel)]="vinBus2">
+                    <label>Antigüedad:</label>
+                    <select (change)="buscaPorAntiguedad(20,1,' ', ' ',formActivationRequestSearch)"  [(ngModel)]="this.numAntiguedad"  name="formAntiguedad" id="formAntiguedad" class="form-control">
+                      <option [ngValue]="0">Todos</option>
+                      <option [ngValue]="1">0 a 30 días</option>
+                      <option [ngValue]="2">31 a 60 días</option>
+                      <option [ngValue]="3">61 a 90 días</option>
+                      <option [ngValue]="4">91 a 120 días</option>
+                      <option [ngValue]="5">121 a 180 días</option>
+                      <option [ngValue]="6">181 o más</option>
+                   </select>
+                   
+                  </form>
+                  </td>
+                  <td><mat-paginator style="font-size:x-small;" *ngIf="intTipoBusqueda == 1" [length]="ListUnidades.length" [pageSize]="20" 
+                    (page)="handlePageUnidadesVIN($event)">
+                  </mat-paginator>
+                </td>
+                </tr>
+              </table>
+              <!--busqueda por Clase y Modelo-->
+              <table  *ngIf="intTipoBusqueda == 2">
+                <thead >
+                  <tr>
+                    <th scope="col">Clasificación corporativa</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let clasesCorpo of ListClasesCorpo">
+                  <tr >
+                    <table style="background-color:rgb(241, 241, 241) ;">
+                      <tr>
+                        <td style="font-size:x-small; width: 20%;" *ngIf=" clasesCorpo.intNumReg > 0">
+                          <button style="font-size:x-small;" *ngIf="!muestraModelos && clasesCorpo.intNumReg > 0" (click)="getModelosPorClase(20,1,clasesCorpo.idClasCorp,clasesCorpo)"  type="button" ><mat-icon>keyboard_arrow_right</mat-icon>{{clasesCorpo.nombre}}</button>
+                          <button style="font-size:x-small;" *ngIf="muestraModelos && IdClasCorpActual != clasesCorpo.idClasCorp && clasesCorpo.intNumReg > 0" (click)="getModelosPorClase(20,1,clasesCorpo.idClasCorp,clasesCorpo)"  type="button" ><mat-icon>keyboard_arrow_right</mat-icon>{{clasesCorpo.nombre}}</button>
+                          <button style="font-size:x-small;" *ngIf="muestraModelos && IdClasCorpActual == clasesCorpo.idClasCorp && clasesCorpo.intNumReg > 0" (click)="limpiaModelos(clasesCorpo)"   type="button" ><mat-icon>arrow_drop_down</mat-icon>{{clasesCorpo.nombre}}</button>
+    
+                        </td>
+                        <td *ngIf=" clasesCorpo.intNumReg > 0">
+                          <label style="color:darkblue;">{{clasesCorpo.intNumReg}} unidades</label>
+                        </td>
+                      </tr>
+                    </table>
+                  </tr>
+                  <tr>
+                    <td *ngIf="clasesCorpo.bitExpandir">
+                      <table class="table" >
+                        <td>
+                          <input  matInput placeholder="Modelo" id="idBusquedaVIN" name="idBusquedaVIN" class="form-control"  [(ngModel)]="ModeloBus">
+                        </td>
+                        <tbody *ngFor="let modelo of ListModelos | modelos: ModeloBus  let indice=index;">
+  
+                          <tr *ngIf="modelo.idClasCorp == clasesCorpo.idClasCorp
+                          && clasesCorpo.bitExpandir
+                          && modelo.intNumReg > 0">
+                            <!--<th scope="row">{{ i + 1 }}</th>-->
+
+                                <td colspan="2" style="font-size:x-small; width:15%;">
+                                  <button style="color:rgb(17, 17, 108);font-size:x-small;" *ngIf="!modelo.bitExpandir" (click)="getUnidadesPorModelo(20,1,modelo.modelo,modelo)"  type="button" ><mat-icon>keyboard_arrow_right</mat-icon>{{modelo.modelo}}</button>
+                                  <button style="font-size:x-small;" *ngIf="modelo.bitExpandir" (click)="limpiaUnidades(modelo)"  type="button" ><mat-icon>arrow_drop_down</mat-icon>{{modelo.modelo}}</button>
+                                  
+                                </td>
+                                <td *ngIf=" modelo.intNumReg > 0" style="text-align:left; width:25%;">
+                                  <label style="color:darkblue;">{{modelo.intNumReg}} unidades</label>
+                                </td>
+
+
+                          </tr>
+                          <tr *ngIf="modelo.bitExpandir">
+                            <td colspan="4">
+                              <table style="width:80%" class="table" >
+                                <tr style="color:blue;">
+                                  <td>VIN</td>
+                                  <td>Distribuidor</td>
+                                  <td>Fecha inventario</td>
+                                  <td>Motor</td>
+                                  <td>Días plan</td>
+                                  <td>Estatus</td>
+                                  <td>Antigüedad</td>
+                                </tr>
+                                <tbody  *ngFor="let unidad of ListUnidades
+                                                let indice=index;">
+
+                                  <tr style="font-size:x-small;" *ngIf="unidad.modelo == modelo.modelo
+                                  && unidad.idClasCorp == clasesCorpo.idClasCorp">
+                                    <!--<th scope="row">{{ i + 1 }}</th>-->
+                                    <td >
+                                      <mat-checkbox
+                                      [checked]="false" 
+                                      (change)="valueChange(unidad,$event)">
+                                      </mat-checkbox>
+                                      {{unidad.vin}} 
+                                    </td>
+                                    <td >
+                                      {{unidad.strNombreDealer}}
+                                    </td>
+                                    <td >
+                                      {{unidad.fchInventario | date: 'fullDate'}}
+                                    </td>
+                                    <td >
+                                        {{unidad.motor}}
+                                    </td>
+                                    <td >
+                                      {{unidad.diasPlan}}
+                                  </td>
+                                  <td >
+                                    {{unidad.status}}
+                                </td>
+                                <td >
+                                  {{unidad.intAntiguedad}} días
+                              </td>
+                                  </tr>                               
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                          
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+  
+
+                            <!--agrupado por antiguedad-->
+                            <table  *ngIf="intTipoBusqueda == 3">
+                              <thead >
+                                <tr>
+                                  <th scope="col">Clasificación corporativa agrupada por antiguedad</th>
+                                </tr>
+                              </thead>
+                              <tbody *ngFor="let clasesCorpoAnt of ListClasesCorpoByAntiguedad let indice=index;">
+                                <tr *ngIf="clasesCorpoAnt.intNumReg > 0">
+                                  <td *ngIf="clasesCorpoAnt.intIdAntiguedad == 1 ">                                
+                                    <label >De 0 a 30 días</label>
+                                  </td>
+                                  <td  *ngIf="clasesCorpoAnt.intIdAntiguedad == 2">
+                                    <label>De 31 a 60 días</label>
+                                  </td>
+                                  <td *ngIf="clasesCorpoAnt.intIdAntiguedad == 3 ">
+                                    <label >De 61 a 90 días</label>
+                                  </td>
+                                  <td *ngIf="clasesCorpoAnt.intIdAntiguedad == 4">
+                                    <label >De 91 a 120 días</label>
+                                  </td>
+                                  <td *ngIf="clasesCorpoAnt.intIdAntiguedad == 5">
+                                    <label >De 121 a 180 días</label>
+                                  </td>
+                                  <td *ngIf="clasesCorpoAnt.intIdAntiguedad == 6">
+                                    <label >Más de 180 días</label>
+                                  </td>
+
+                                </tr>
+
+                              <tr *ngIf="clasesCorpoAnt.intNumReg > 0">
+
+                                <td>
+                                  <table *ngFor="let idAntiguedad of listaIdAntiguedad"  >
+                              <tr *ngIf="clasesCorpoAnt.intIdAntiguedad == idAntiguedad && clasesCorpoAnt.intNumReg > 0">                          
+                                <td >
+                                <table >
+                                <tr >
+                                  <table>
+                                    <tr >
+                                      <table style="background-color:rgb(241, 241, 241) ;">
+                                        <tr>
+                                          <td style="font-size:x-small; width: 20%;" *ngIf=" clasesCorpoAnt.intNumReg > 0">
+                                            <button style="font-size:x-small;" *ngIf="!muestraModelos && clasesCorpoAnt.intNumReg > 0" (click)="getModelosPorClase(20,1,clasesCorpoAnt.idClasCorp,clasesCorpoAnt)"  type="button" ><mat-icon>keyboard_arrow_right</mat-icon>{{clasesCorpoAnt.nombre}}</button>
+                                            <button style="font-size:x-small;" *ngIf="muestraModelos && IdClasCorpActual != clasesCorpoAnt.idClasCorp && clasesCorpoAnt.intNumReg > 0" (click)="getModelosPorClase(20,1,clasesCorpoAnt.idClasCorp,clasesCorpoAnt)"  type="button" ><mat-icon>keyboard_arrow_right</mat-icon>{{clasesCorpoAnt.nombre}}</button>
+                                            <button style="font-size:x-small;" *ngIf="muestraModelos && IdClasCorpActual == clasesCorpoAnt.idClasCorp && clasesCorpoAnt.intNumReg > 0" (click)="limpiaModelos(clasesCorpoAnt)"   type="button" ><mat-icon>arrow_drop_down</mat-icon>{{clasesCorpoAnt.nombre}}</button>
+              
+                                          </td>
+                                          <td *ngIf=" clasesCorpoAnt.intNumReg > 0">
+                                            <label style="color:darkblue;">{{clasesCorpoAnt.intNumReg}} unidades</label>
+                                          </td>
+                                        </tr>
+                                      </table>
+                                    </tr>
+                                    <tr>
+                                      <td *ngIf="clasesCorpoAnt.bitExpandir">
+                                        <table class="table" >
+                                          <td>
+                                            <input  matInput placeholder="Modelo" id="idBusquedaVIN" name="idBusquedaVIN" class="form-control"  [(ngModel)]="ModeloBus">
+                                          </td>
+                                          <tbody *ngFor="let modelo of ListModelos | modelos: ModeloBus  let indice=index;">
+              
+                                            <tr *ngIf="modelo.idClasCorp == clasesCorpoAnt.idClasCorp
+                                            && clasesCorpoAnt.bitExpandir
+                                            && modelo.intNumReg > 0
+                                            && modelo.idAntiguedad == idAntiguedad">
+                                              <!--<th scope="row">{{ i + 1 }}</th>-->
+              
+                                                  <td colspan="2" style="font-size:x-small; width:15%;">
+                                                    <button style="color:rgb(17, 17, 108);font-size:x-small;" *ngIf="!modelo.bitExpandir" (click)="getUnidadesPorModelo(20,1,modelo.modelo,modelo)"  type="button" ><mat-icon>keyboard_arrow_right</mat-icon>{{modelo.modelo}}</button>
+                                                    <button style="font-size:x-small;" *ngIf="modelo.bitExpandir" (click)="limpiaUnidades(modelo)"  type="button" ><mat-icon>arrow_drop_down</mat-icon>{{modelo.modelo}}</button>
+                                                    
+                                                  </td>
+                                                  <td *ngIf=" modelo.intNumReg > 0" style="text-align:left; width:25%;">
+                                                    <label style="color:darkblue;">{{modelo.intNumReg}} unidades</label>
+                                                  </td>
+              
+              
+                                            </tr>
+                                            <tr *ngIf="modelo.bitExpandir">
+                                              <td colspan="4">
+                                                <table style="width:80%" class="table" >
+                                                  <tr style="color:blue;">
+                                                    <td>VIN</td>
+                                                    <td>Distribuidor</td>
+                                                    <td>Fecha inventario</td>
+                                                    <td>Motor</td>
+                                                    <td>Días plan</td>
+                                                    <td>Estatus</td>
+                                                    <td>Antigüedad</td>
+                                                  </tr>
+                                                  <tbody  *ngFor="let unidad of ListUnidades
+                                                                  let indice=index;">
+              
+                                                    <tr style="font-size:x-small;" *ngIf="unidad.modelo == modelo.modelo
+                                                    && unidad.idClasCorp == clasesCorpoAnt.idClasCorp
+                                                    && unidad.idAntiguedad == idAntiguedad">
+                                                      <!--<th scope="row">{{ i + 1 }}</th>-->
+                                                      <td >
+                                                        <mat-checkbox
+                                                        [checked]="false" 
+                                                        (change)="valueChange(unidad,$event)">
+                                                        </mat-checkbox>
+                                                        {{unidad.vin}} 
+                                                      </td>
+                                                      <td >
+                                                        {{unidad.strNombreDealer}}
+                                                      </td>
+                                                      <td >
+                                                        {{unidad.fchInventario | date: 'fullDate'}}
+                                                      </td>
+                                                      <td >
+                                                          {{unidad.motor}}
+                                                      </td>
+                                                      <td >
+                                                        {{unidad.diasPlan}}
+                                                    </td>
+                                                    <td >
+                                                      {{unidad.status}}
+                                                  </td>
+                                                  <td >
+                                                    {{unidad.intAntiguedad}} días
+                                                </td>
+                                                    </tr>                               
+                                                  </tbody>
+                                                </table>
+                                              </td>
+                                            </tr>
+                                            
+                                          </tbody>
+                                        </table>
+                                      </td>
+                                    </tr>            
+                                  </table>
+                                </tr>
+                                </table>
+                              </td>
+                              </tr>
+                                  </table>
+                                </td>
+                            </tr>
+
+
+                              </tbody>
+                            </table>
+
+
+              <!--busqueda por vin-->
+
+              <table class="table" *ngIf="intTipoBusqueda == 1">
+                <thead >
+                  <tr>
+                    <!--<th scope="col">
+                      <form class="form-busquedaVIN" #formBusquedaVIN="ngForm">
+                      <input matInput placeholder="VIN" id="idBusquedaVIN" name="idBusquedaVIN" class="form-control" value="" (change)="buscaVIN(20,1,formBusquedaVIN)" [(ngModel)]="vinBus">
+                    </form>
+                    </th>-->
+                    <th>VIN</th>
+                    <th scope="col">Modelo</th>
+                    <th scope="col">Clase corporativa</th>
+                    <th scope="col">Distribuidor</th>
+                    <th scope="col">Motor</th>
+                    <th scope="col">Fecha inventario</th>
+                    <th scope="col">Días plan</th>
+                    <th scope="col">Estatus</th>
+                    <th scope="col">Antigüedad</th>
+                    
+                    
+                  </tr>
+                </thead>
+                <tbody *ngFor="let unidad of ListUnidades | pagination: page_sizeUni:page_numberUni | numerosParte: vinBus">
+                  <tr >
+                    <!--<th scope="row">{{ i + 1 }}</th>-->
+                    <td>
+                      <mat-checkbox
+                      [checked]="false" 
+                      (change)="valueChange(unidad,$event)">
+                      </mat-checkbox> 
+                      {{unidad.vin}}
+                    </td>
+                    <td>
+                      {{unidad.modelo}}
+                    </td>
+                    <td>
+                      {{unidad.claseCorporativa}}
+                    </td>
+                    <td>
+                      {{unidad.strNombreDealer}}
+                    </td>
+                    <td>
+                      {{unidad.motor}}
+                    </td>
+                    <td>
+                      {{unidad.fchInventario | date: 'fullDate'}}
+                    </td>
+                    <td>
+                      {{unidad.diasPlan}}
+                    </td>
+                    <td>
+                      {{unidad.status}}
+                    </td>
+                    <td>
+                      {{unidad.intAntiguedad}} días
+                    </td>
+  
+                  </tr>
+                  <tr>
+                    <td>
+                      <table class="table">
+                        <tbody>
+                          <tr >
+                            <!--<th scope="row">{{ i + 1 }}</th>-->
+                            <td>
+                             
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <!--{{ListUnidades | json}}-->
+            
+
+  </div> 
+
+
+  
+      
+  <div hidden="true" class="table-responsive" #tableUnit>
+    <table class="table">
+      <tr>
+        <td>VIN</td>
+        <td>Modelo</td>
+        <td>Clase corporativa</td>
+        <td>Distribuidor</td>
+        <td>Motor</td>
+        <td>Fecha inventario</td>
+        <td>Días plan</td>
+        <td>Estatus</td>
+        <td>Antigüedad</td>
+      </tr>
+      <tr *ngFor="let unidad of ListUnidades;">
+        <td>
+          {{unidad.vin}}
+        </td>
+        <td>
+          {{unidad.modelo}}
+        </td>
+        <td>
+          {{unidad.claseCorporativa}}
+        </td>
+        <td>
+          {{unidad.strNombreDealer}}
+        </td>
+        <td>
+          {{unidad.motor}}
+        </td>
+        <td>
+          {{unidad.fchInventario | date: 'fullDate'}}
+        </td>
+        <td>
+          {{unidad.diasPlan}}
+        </td>
+        <td>
+          {{unidad.status}}
+        </td>
+        <td>
+          {{unidad.intAntiguedad}} días
+        </td>    
+      </tr>
+    </table>
+  </div>

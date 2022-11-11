@@ -1,0 +1,59 @@
+
+<mat-nav-list>
+    <span class="nav-caption"> On Command</span>
+  
+  <hr />
+  <mat-list-item *ngIf="usuariosRoles?.indexOf('catalogoClientesMenu')?? -1 > -1 || usuariosRoles?.indexOf('catalogoDispositivosMenu')?? -1  > -1"  [matMenuTriggerFor]="menuSis">
+    <mat-icon>unfold_more</mat-icon>
+    <a matline>Catálogos</a>
+  </mat-list-item>
+  <mat-menu #menuSis="matMenu">
+    <!--<button mat-menu-item (click)="onSidenavClose()" routerLink="dealers"><mat-icon>local_shipping</mat-icon>Distribuidores</button>-->
+    <button *ngIf="usuariosRoles?.indexOf('catalogoClientesMenu')?? -1  > -1" mat-menu-item (click)="onSidenavClose()" routerLink="client"><mat-icon>people</mat-icon>Clientes</button>
+    <button *ngIf="usuariosRoles?.indexOf('catalogoDispositivosMenu')?? -1  > -1"  mat-menu-item (click)="onSidenavClose()" routerLink="dispositives"><mat-icon>departure_board</mat-icon>Dispositivos</button>
+    <button *ngIf="usuariosRoles?.indexOf('catalogoClientesMenu')?? -1  > -1" mat-menu-item (click)="onSidenavClose()" routerLink="tiposCambio"><mat-icon>attach_money</mat-icon>Tipos de Cambio</button>
+    <!--<button mat-menu-item (click)="onSidenavClose()" routerLink="roles"><mat-icon>people</mat-icon>Roles</button>-->
+    <!--<button mat-menu-item (click)="onSidenavClose()" routerLink="status"><mat-icon>check_circle</mat-icon>Estatus</button>-->
+    <!--<button mat-menu-item (click)="onSidenavClose()"><mat-icon>menu_book</mat-icon>Tipos de Documentos</button>-->
+    <!--<button mat-menu-item (click)="onSidenavClose()"><mat-icon>build</mat-icon>Tipos de Servicio</button>-->
+  </mat-menu>
+
+  <mat-list-item  *ngIf="usuariosRoles?.indexOf('unidadesMenu')?? -1  > -1" [matMenuTriggerFor]="menuAdminUnidades">
+    <mat-icon>unfold_more</mat-icon>
+    <a matline>Administración de Unidades</a>
+  </mat-list-item>
+  <mat-menu #menuAdminUnidades="matMenu">
+    <button *ngIf="usuariosRoles?.indexOf('unidadesMenu')?? -1  > -1"  mat-menu-item (click)="onSidenavClose()" routerLink="unidades"><mat-icon>local_shipping</mat-icon>Unidades</button>
+  </mat-menu>
+
+  <mat-list-item *ngIf="usuariosRoles?.indexOf('solicitudInstalacionMenu')?? -1  > -1 || usuariosRoles?.indexOf('solicitudActivacionMenu')?? -1  > -1"  [matMenuTriggerFor]="menuSolicitudes">
+    <mat-icon>unfold_more</mat-icon>
+    <a matline>Solicitudes</a>
+  </mat-list-item>
+  <mat-menu #menuSolicitudes="matMenu">
+    <button *ngIf="usuariosRoles?.indexOf('solicitudInstalacionMenu')?? -1  > -1" mat-menu-item (click)="onSidenavClose()" routerLink="solicitudesInstalacion/1"><mat-icon>build</mat-icon>Solicitudes de Instalación</button>
+    <button *ngIf="usuariosRoles?.indexOf('solicitudActivacionMenu')?? -1  > -1" mat-menu-item (click)="onSidenavClose()" routerLink="solicitudesActivacion/6"><mat-icon>lock_open</mat-icon>Solicitudes de Activación</button>
+    <button *ngIf="usuariosRoles?.indexOf('solicitudInstalacionMenu')?? -1  > -1" mat-menu-item (click)="onSidenavClose()" routerLink="paiments/1"><mat-icon>attach_money</mat-icon>Pagos de Instalaciones</button>
+  </mat-menu>
+
+  <!--<mat-list-item *ngIf="usuariosRoles?.indexOf('estadoCuentaMenu')?? -1  > -1 || usuariosRoles?.indexOf('unidadesPendientesMenu')?? -1  > -1 || usuariosRoles?.indexOf('UnidadesProximasVencerMenu')?? -1  > -1"   [matMenuTriggerFor]="menuReportes">
+    <mat-icon>unfold_more</mat-icon>
+    <a matline>Reportes</a>
+  </mat-list-item>
+  <mat-menu #menuReportes="matMenu">
+    <button *ngIf="usuariosRoles?.indexOf('estadoCuentaMenu')?? -1  > -1" mat-menu-item (click)="onSidenavClose()"> <mat-icon>subject</mat-icon>Estados de Cuenta</button>
+    <button *ngIf="usuariosRoles?.indexOf('unidadesPendientesMenu')?? -1  > -1" mat-menu-item (click)="onSidenavClose()"><mat-icon>list</mat-icon>Unidades Pendientes</button>
+    <button *ngIf="usuariosRoles?.indexOf('UnidadesProximasVencerMenu')?? -1  > -1" mat-menu-item (click)="onSidenavClose()"><mat-icon>schedule</mat-icon>Unidades Próximas a Vencer</button>
+  </mat-menu>-->
+  <hr/>
+  <a mat-list-item routerLink="/home"> <mat-icon>home</mat-icon> <span class="nav-caption"> --Inicio</span></a>
+  <!--<a mat-list-item routerLink="/home" (click)="onSidenavClose()">
+    <mat-icon>home</mat-icon> <span class="nav-caption">Administración Unidades</span>
+  </a>
+  <a mat-list-item routerLink="/owner" (click)="onSidenavClose()">
+    <mat-icon>assignment_ind</mat-icon> <span class="nav-caption">Owner Actions</span>
+  </a>
+  <a mat-list-item routerLink="#" (click)="onSidenavClose()">
+    <mat-icon>account_balance</mat-icon><span class="nav-caption">Account Actions</span>
+  </a>-->
+</mat-nav-list>
