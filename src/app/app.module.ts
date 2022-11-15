@@ -28,6 +28,7 @@ import {MatPaginatorModule,MatPaginatorIntl} from '@angular/material/paginator';
 import { PaginationPipe } from './pipes/pagination.pipe';
 import { NumerosPartePipe } from './pipes/numeros-parte.pipe';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatSelectModule} from '@angular/material/select';
 import { CapturaVentaComponent } from './capturaVenta/captura-venta.component';
 import { ModelosPipe } from './pipes/modelos.pipe';
   
@@ -79,7 +80,8 @@ const routes: Routes = [
     MatCheckboxModule,
     MatPaginatorModule,
     FormsModule,
-    MatMenuModule
+    MatMenuModule,
+    MatSelectModule
 ],
   providers: [{ 
     provide:HTTP_INTERCEPTORS,

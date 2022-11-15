@@ -2,7 +2,7 @@ import { ThisReceiver } from '@angular/compiler';
 import { Component,ElementRef,OnInit, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import {UnidadesService} from '../services/unidades.service';
-import { NgForm } from '@angular/forms';
+import { FormControl, NgForm } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Console, groupCollapsed } from 'console';
 import * as XLSX from 'xlsx'; 
@@ -31,8 +31,10 @@ export class UnidadesComponent implements OnInit {
     ListUnidades: any[] = [];
   ListUnidadesPorModelo: any[] = [];
   ListClasesCorpo: any[] = [];
-  ListClasesCorpoByAntiguedad: any[] = [];
+  ListClasesCorpoByAntiguedad: any[] = []; 
   ListModelos: any[] = [];
+  ListDistribuidoresCombo: any[] = [];
+  ListLocalidadesCombo: any[] = [];
   ListModelosCount: number = 0;
   intTipoBusqueda: number = 1;
   IdClasCorpActual:number = 0;
@@ -44,14 +46,29 @@ export class UnidadesComponent implements OnInit {
   listConteoModelos!: { idClasCorp: number, numReg: number; };
   listModelosTemp:any[] = [];
   listaIdAntiguedad:number[]=[1,2,3,4,5,6];
+  //columnasUnidad:string[]=['',2,3,4,5,6];
   public numAntiguedad: number = 0;
   strBusqueda = '';
+  stridAntiguedad: any = 0;
+  GFX:any;
+  localidad:any;
 
   vinBus = '';
   vinBus2 = '';
   ModeloBus = '';
   strVIN = '';
-  
+
+  ////id columnas
+  col1 = true;
+  col2 = true;
+  col3 = true;
+  col4 = true;
+  col5 = true;
+  col6 = true;
+  col7 = true;
+  col8 = true;
+  col9 = true;
+  selectedObjects: any;
 
   //paginacinoes
   page_size: number = 20;
@@ -63,28 +80,100 @@ export class UnidadesComponent implements OnInit {
 
   displayedColumns: string[] = ['vin','modelo','claseCorporativa'];
 
+  columnasList: any = [
+    {value: '1', label:'VIN'},
+    {value:'2', label:'Modelo'},
+    {value:'3', label:'Clase corporativa'},
+    {value:'4', label:'Distribuidor'},
+    {value:'5', label:'Motor'},
+    {value:'6', label:'Fecha inventario'},
+    {value:'7', label:'Días plan'},
+    {value:'8', label:'Estatus'},
+    {value:'9', label:'Antigüedad'}
+  ];
+
   constructor(public unidadesServices: UnidadesService) { }
 
   
 
   ngOnInit(): void {
+
+
     this.buscadatos();
+
+    this.selectedObjects = ['1','2','3','4','5','6','7','8','9'];
+
   }
 
+
+
   buscadatos(){
-    this.getUnidades(20,1,' ', ' ',0,0,'');
+    this.getUnidades(20,1,' ', ' ',0,0,'',0,' ');
     this.getClasesCorporativa();
     this.getModelos(0,0,0,0,'');
     this.getClasesCorporativaByAntiguedad();
+    this.getDistribuidoresCombo();
   }
 
-  buscaPorAntiguedad(intPageSize: number,intPageNum: number,strModelo: string,strVIN: string,form:NgForm){
-    //alert(form.value.formAntiguedad);
-    this.strBusqueda = form.value.formBusqueda;
 
-    this.getUnidades(20,1,' ', ' ',form.value.formAntiguedad,0,this.strBusqueda);
+
+busquedaPorTexto(intPageSize: number,intPageNum: number,strModelo: string,strVIN: string,form:NgForm){
+  this.strBusqueda = form.value.formBusqueda;
+
+  this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad);
+  this.getClasesCorporativa();
+  this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda);
+  this.getClasesCorporativaByAntiguedad();
+}
+
+muestraColumnas(e: Event){
+  
+  this.stridAntiguedad = e + '';
+
+  this.col1 = false;
+  this.col2 = false;
+  this.col3 = false;
+  this.col4 = false; 
+  this.col5 = false; 
+  this.col6 = false; 
+  this.col7 = false; 
+  this.col8 = false;
+  this.col9 = false; 
+
+  this.stridAntiguedad.split(',').forEach((element: string) => {
+    //alert(element);
+    if(element == '1'){this.col1 = true;} 
+    if(element == '2'){this.col2 = true;} 
+    if(element == '3'){this.col3 = true;} 
+    if(element == '4'){this.col4 = true;} 
+    if(element == '5'){this.col5 = true;} 
+    if(element == '6'){this.col6 = true;} 
+    if(element == '7'){this.col7 = true;} 
+    if(element == '8'){this.col8 = true;}
+    if(element == '9'){this.col9 = true;} 
+  });
+
+  //alert(this.stridAntiguedad.split(','));
+
+}
+
+buscaPorDistribuidor(e: Event){
+  //alert(form.value.formAntiguedad);
+  this.stridAntiguedad = e;
+
+  this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad);
+  this.getClasesCorporativa();
+  this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda);
+  this.getClasesCorporativaByAntiguedad();
+}
+
+  buscaPorAntiguedad(e: Event){
+    //alert(form.value.formAntiguedad);
+    this.stridAntiguedad = e;
+
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad);
     this.getClasesCorporativa();
-    this.getModelos(0,0,0,form.value.formAntiguedad,this.strBusqueda);
+    this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda);
     this.getClasesCorporativaByAntiguedad();
   }
 
@@ -101,14 +190,15 @@ export class UnidadesComponent implements OnInit {
 
   }*/
 
-  getUnidades(intPageSize: number,intPageNum: number,strModelo: string,strVIN: string, idAntiguedad: number,idCorp: number,strBusqueda:string): void{
+  getUnidades(intPageSize: number,intPageNum: number,strModelo: string,strVIN: string, idAntiguedad: number,idCorp: number,strBusqueda:string,
+    intGFX:any,intLocalidad: any ): void{
     if(strBusqueda == undefined
       || strBusqueda == ''){
         strBusqueda = ' ';
       }
 
     this.unidadesServices
-    .getAllUnidades(intPageSize,intPageNum,strModelo,strVIN,idAntiguedad,idCorp,strBusqueda)
+    .getAllUnidades(intPageSize,intPageNum,strModelo,strVIN,idAntiguedad,idCorp,strBusqueda, intGFX,intLocalidad)
     .subscribe((_unidades:any[]) => {
       this.ListUnidades = _unidades 
       });
@@ -151,6 +241,35 @@ export class UnidadesComponent implements OnInit {
     .subscribe((_Clases:any[]) => {
       this.ListClasesCorpoByAntiguedad = _Clases 
       });
+  }
+
+  getDistribuidoresCombo(){
+    this.unidadesServices
+    .getDistribuidoresCombo()
+    .subscribe((_ListDistribuidoresCombo:any[]) => {
+      this.ListDistribuidoresCombo = _ListDistribuidoresCombo
+      });
+  }
+
+  getLocalidadesByDistribuidor(e: Event){
+    this.GFX= e;
+    this.localidad = ' ';
+
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda,this.GFX,this.localidad);
+
+    this.unidadesServices
+    .getLocalidadesCombo(e)
+    .subscribe((_ListLocalidadesCombo:any[]) => {
+      this.ListLocalidadesCombo = _ListLocalidadesCombo
+      });
+  }
+
+  getLocalidades(e: Event){
+
+    this.localidad = e;
+
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda,this.GFX,this.localidad);
+
   }
 
 
@@ -210,7 +329,7 @@ export class UnidadesComponent implements OnInit {
   reagrupaIOnventario(tipoAgrupador: number){
     //alert(tipoAgrupador);
     if(tipoAgrupador == 1){
-      this.getUnidades(20,1,' ',' ',0,0,'');
+      this.getUnidades(20,1,' ',' ',0,0,'',0,'');
     }
     this.intTipoBusqueda =tipoAgrupador;
   }
