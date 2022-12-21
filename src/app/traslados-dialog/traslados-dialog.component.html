@@ -1,0 +1,66 @@
+<h2 *ngIf="data.unidadesModel.intIdTraspaso == 0" style="color:rgb(42, 42, 138);">Solicitar traspaso de unidad</h2>
+<h2 *ngIf="data.unidadesModel.intIdTraspaso > 0" style="color:rgb(42, 42, 138);">Aceptar / Rechazar traspaso de unidad</h2>
+<h4 style="color:rgba(31, 31, 167, 0.227);"> Unidad: {{data.unidadesModel.vin}} - {{data.unidadesModel.modelo}}</h4>
+<hr>
+<p></p>
+<label *ngIf="errorLocalidad" style="color:red">Seleccione la sucursal destino.</label>
+<label *ngIf="localidadRepetida" style="color:red">Nu puede traspasar la unidad a la misma sucursal.</label>
+<p *ngIf="localidadRepetida || errorLocalidad"></p>
+<table style="width:90%">
+    <tr>
+        <td>
+            <label >Distribuidor</label>
+        </td>
+        <td>
+            <label >Sucursal actual</label>
+        </td>
+        <td>
+            <label >Sucursal destino</label>
+        </td>
+        <td>
+
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>
+            <label >{{data.unidadesModel.strNombreDealer}}</label>
+        </td>
+        <td>
+            <label >{{data.unidadesModel.strLocalidad}}</label>
+        </td>
+        <td *ngIf="data.unidadesModel.intIdTraspaso == 0">
+            <mat-form-field appearance="fill">
+                <mat-label>Sucursales</mat-label>
+                <mat-select  (selectionChange)="getNuevaLocalidad($event.value)">
+                  <mat-option 
+                  *ngFor="let localidad of ListLocalidadesCombo" 
+                  [value]="localidad.idlocalidad">
+                  {{localidad.idlocalidad}}
+                </mat-option>
+
+                </mat-select>
+              </mat-form-field>
+        </td>
+        <td *ngIf="data.unidadesModel.intIdTraspaso > 0">
+            <label >{{data.unidadesModel.strLocalidadNueva}}</label>
+        </td>
+        <td>
+            <button *ngIf="data.unidadesModel.intIdTraspaso == 0" (click)="guardarSolicitudTraspaso(data.unidadesModel,1)"   type="button" ><mat-icon>check</mat-icon>Solicitar</button>
+            <button *ngIf="data.unidadesModel.intIdTraspaso > 0" (click)="guardarSolicitudTraspaso(data.unidadesModel,2)"   type="button" ><mat-icon>compare_arrows</mat-icon>Traspasar</button>
+            
+        </td>
+        <td><button *ngIf="data.unidadesModel.intIdTraspaso > 0" (click)="guardarSolicitudTraspaso(data.unidadesModel,0)"   type="button" ><mat-icon>clear</mat-icon>Rechazar traspaso</button></td>
+    </tr>
+</table>
+<!--<div mat-dialog-content>
+  <p>What's your favorite animal?</p>
+  <mat-form-field appearance="fill">
+    <mat-label>Favorite Animal</mat-label>
+    <input matInput [(ngModel)]="data.vin">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+
+</div>-->
