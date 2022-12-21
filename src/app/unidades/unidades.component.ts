@@ -1,11 +1,14 @@
 import { ThisReceiver } from '@angular/compiler';
-import { Component,ElementRef,OnInit, ViewChild } from '@angular/core';
+import { Component,ElementRef,Inject,OnInit, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import {UnidadesService} from '../services/unidades.service';
 import { FormControl, NgForm } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Console, groupCollapsed } from 'console';
 import * as XLSX from 'xlsx'; 
+import {MatDialog, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+//import {TrasladosDialogComponent} from '../traslados-dialog/traslados-dialog.component';
+
 
 export class Group {
   level = 0;
@@ -16,6 +19,10 @@ export class Group {
   get visible(): boolean {
     return !this.parent || (this.parent.visible && this.parent.expanded);
   }
+}
+
+export interface DialogData {
+  unidadesModel: any;
 }
 
 @Component({
@@ -35,6 +42,7 @@ export class UnidadesComponent implements OnInit {
   ListModelos: any[] = [];
   ListDistribuidoresCombo: any[] = [];
   ListLocalidadesCombo: any[] = [];
+  ListClasCorpoCombo: any[] = [];
   ListModelosCount: number = 0;
   intTipoBusqueda: number = 1;
   IdClasCorpActual:number = 0;
@@ -50,8 +58,9 @@ export class UnidadesComponent implements OnInit {
   public numAntiguedad: number = 0;
   strBusqueda = '';
   stridAntiguedad: any = 0;
-  GFX:any;
-  localidad:any;
+  stridClasCorpo: any = 0;
+  GFX:any = 0;
+  localidad:any = ' ';
 
   vinBus = '';
   vinBus2 = '';
@@ -68,6 +77,8 @@ export class UnidadesComponent implements OnInit {
   col7 = true;
   col8 = true;
   col9 = true;
+  col10 = true;
+  col11 = true;
   selectedObjects: any;
 
   //paginacinoes
@@ -77,6 +88,9 @@ export class UnidadesComponent implements OnInit {
   //UNIDADES POR VIN
   page_sizeUni: number = 20;
   page_numberUni: number = 1;
+
+  //MODALES
+
 
   displayedColumns: string[] = ['vin','modelo','claseCorporativa'];
 
@@ -89,30 +103,32 @@ export class UnidadesComponent implements OnInit {
     {value:'6', label:'Fecha inventario'},
     {value:'7', label:'Días plan'},
     {value:'8', label:'Estatus'},
-    {value:'9', label:'Antigüedad'}
+    {value:'9', label:'Antigüedad'},
+    {value:'10', label:'Sucursal'},
+    {value:'11', label:'Pedido'}
   ];
 
-  constructor(public unidadesServices: UnidadesService) { }
-
-  
+  constructor(public unidadesServices: UnidadesService
+    ,public dialog: MatDialog
+    ) { }
 
   ngOnInit(): void {
 
+    this.buscadatos(false);
 
-    this.buscadatos();
-
-    this.selectedObjects = ['1','2','3','4','5','6','7','8','9'];
+    this.selectedObjects = ['1','2','3','4','5','6','7','8','9','10','11'];
 
   }
 
 
 
-  buscadatos(){
-    this.getUnidades(20,1,' ', ' ',0,0,'',0,' ');
-    this.getClasesCorporativa();
-    this.getModelos(0,0,0,0,'');
-    this.getClasesCorporativaByAntiguedad();
+  buscadatos(pendTraspaso: boolean){
+    this.getUnidades(20,1,' ', ' ',0,0,this.strBusqueda,0,' ',0,pendTraspaso);
+    this.getClasesCorporativa(0,' ',0,pendTraspaso);
+    this.getModelos(0,0,0,0,this.strBusqueda,0,' ',0,pendTraspaso);
+    this.getClasesCorporativaByAntiguedad(0,' ',0,pendTraspaso);
     this.getDistribuidoresCombo();
+    this.getClasificacioCorporativaCombo();
   }
 
 
@@ -120,10 +136,10 @@ export class UnidadesComponent implements OnInit {
 busquedaPorTexto(intPageSize: number,intPageNum: number,strModelo: string,strVIN: string,form:NgForm){
   this.strBusqueda = form.value.formBusqueda;
 
-  this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad);
-  this.getClasesCorporativa();
-  this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda);
-  this.getClasesCorporativaByAntiguedad();
+  this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
+  this.getClasesCorporativa( this.GFX,this.localidad,this.stridClasCorpo,false);
+  this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
+  this.getClasesCorporativaByAntiguedad(this.GFX,this.localidad,this.stridClasCorpo,false);
 }
 
 muestraColumnas(e: Event){
@@ -139,6 +155,8 @@ muestraColumnas(e: Event){
   this.col7 = false; 
   this.col8 = false;
   this.col9 = false; 
+  this.col10 = false;
+  this.col11 = false;
 
   this.stridAntiguedad.split(',').forEach((element: string) => {
     //alert(element);
@@ -151,6 +169,8 @@ muestraColumnas(e: Event){
     if(element == '7'){this.col7 = true;} 
     if(element == '8'){this.col8 = true;}
     if(element == '9'){this.col9 = true;} 
+    if(element == '10'){this.col10 = true;}
+    if(element == '11'){this.col11 = true;}
   });
 
   //alert(this.stridAntiguedad.split(','));
@@ -161,21 +181,32 @@ buscaPorDistribuidor(e: Event){
   //alert(form.value.formAntiguedad);
   this.stridAntiguedad = e;
 
-  this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad);
-  this.getClasesCorporativa();
-  this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda);
-  this.getClasesCorporativaByAntiguedad();
+  this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
+  this.getClasesCorporativa(this.GFX,this.localidad,this.stridClasCorpo,false);
+  this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
+  this.getClasesCorporativaByAntiguedad(this.GFX,this.localidad,this.stridClasCorpo,false);
 }
 
   buscaPorAntiguedad(e: Event){
     //alert(form.value.formAntiguedad);
     this.stridAntiguedad = e;
 
-    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad);
-    this.getClasesCorporativa();
-    this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda);
-    this.getClasesCorporativaByAntiguedad();
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
+    this.getClasesCorporativa(this.GFX,this.localidad,this.stridClasCorpo,false);
+    this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
+    this.getClasesCorporativaByAntiguedad(this.GFX,this.localidad,this.stridClasCorpo,false);
   }
+
+  buscaPorClasCorpo(e: Event){
+    //alert(form.value.formAntiguedad);
+    this.stridClasCorpo = e;
+
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
+    this.getClasesCorporativa(this.GFX,this.localidad,this.stridClasCorpo,false);
+    this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
+    this.getClasesCorporativaByAntiguedad(this.GFX,this.localidad,this.stridClasCorpo,false);
+  }
+
 
   /*buscaVIN(intPageSize: number,intPageNum: number,form:NgForm): void{
     if(form.value.idBusquedaVIN == undefined
@@ -191,14 +222,14 @@ buscaPorDistribuidor(e: Event){
   }*/
 
   getUnidades(intPageSize: number,intPageNum: number,strModelo: string,strVIN: string, idAntiguedad: number,idCorp: number,strBusqueda:string,
-    intGFX:any,intLocalidad: any ): void{
+    intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean ): void{
     if(strBusqueda == undefined
       || strBusqueda == ''){
         strBusqueda = ' ';
       }
 
     this.unidadesServices
-    .getAllUnidades(intPageSize,intPageNum,strModelo,strVIN,idAntiguedad,idCorp,strBusqueda, intGFX,intLocalidad)
+    .getAllUnidades(intPageSize,intPageNum,strModelo,strVIN,idAntiguedad,idCorp,strBusqueda, intGFX,intLocalidad,stridClasCorpo,pendTraspaso)
     .subscribe((_unidades:any[]) => {
       this.ListUnidades = _unidades 
       });
@@ -215,7 +246,7 @@ buscaPorDistribuidor(e: Event){
       this.muestraUnidades = true;
   }
 
-  getClasesCorporativa(): void{
+  getClasesCorporativa(intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean): void{
 
     if(this.strBusqueda == undefined
       || this.strBusqueda == ''){
@@ -223,13 +254,13 @@ buscaPorDistribuidor(e: Event){
       }
 
     this.unidadesServices
-    .getAllClasesCorporativa(this.strBusqueda)
+    .getAllClasesCorporativa(this.stridAntiguedad,this.strBusqueda,intGFX,intLocalidad, stridClasCorpo, pendTraspaso)
     .subscribe((_Clases:any[]) => {
       this.ListClasesCorpo = _Clases 
       });
   }
 
-  getClasesCorporativaByAntiguedad(): void{
+  getClasesCorporativaByAntiguedad(intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean): void{
 
     if(this.strBusqueda == undefined
       || this.strBusqueda == ''){
@@ -237,7 +268,7 @@ buscaPorDistribuidor(e: Event){
       }
 
     this.unidadesServices
-    .getAllClasesCorporativaByAntiguedad(this.strBusqueda)
+    .getAllClasesCorporativaByAntiguedad(this.strBusqueda,intGFX,intLocalidad, stridClasCorpo, pendTraspaso)
     .subscribe((_Clases:any[]) => {
       this.ListClasesCorpoByAntiguedad = _Clases 
       });
@@ -255,7 +286,7 @@ buscaPorDistribuidor(e: Event){
     this.GFX= e;
     this.localidad = ' ';
 
-    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda,this.GFX,this.localidad);
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda,this.GFX,this.localidad,this.stridClasCorpo,false);
 
     this.unidadesServices
     .getLocalidadesCombo(e)
@@ -264,17 +295,26 @@ buscaPorDistribuidor(e: Event){
       });
   }
 
+  getClasificacioCorporativaCombo(){
+    this.unidadesServices
+    .getClasCorpoCombo()
+    .subscribe((_ListClasCorpoCombo:any[]) => {
+      this.ListClasCorpoCombo = _ListClasCorpoCombo
+      });
+  }
+
   getLocalidades(e: Event){
 
     this.localidad = e;
 
-    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda,this.GFX,this.localidad);
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda,this.GFX,this.localidad,this.stridClasCorpo,false);
 
   }
 
 
 
-  getModelos(pageSize: number, pageNumber: number, IdClasCorp:number, idAntiguedad: number,strBusqueda:string): void{
+  getModelos(pageSize: number, pageNumber: number, IdClasCorp:number, idAntiguedad: number,strBusqueda:string,
+    intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean): void{
     this.IdClasCorpActual = IdClasCorp;
     if(strBusqueda == undefined
       || strBusqueda == ''){
@@ -288,7 +328,7 @@ buscaPorDistribuidor(e: Event){
         });}*/
 
     this.unidadesServices
-    .getModelosPorClase(pageSize,pageNumber,IdClasCorp,idAntiguedad,strBusqueda)
+    .getModelosPorClase(pageSize,pageNumber,IdClasCorp,idAntiguedad,strBusqueda,intGFX,intLocalidad,stridClasCorpo,pendTraspaso)
     .subscribe((_Modelos:any[]) => {
       this.ListModelos = _Modelos  
       });
@@ -329,7 +369,7 @@ buscaPorDistribuidor(e: Event){
   reagrupaIOnventario(tipoAgrupador: number){
     //alert(tipoAgrupador);
     if(tipoAgrupador == 1){
-      this.getUnidades(20,1,' ',' ',0,0,'',0,'');
+      this.getUnidades(20,1,' ',' ',0,0,'',0,'',0,false);
     }
     this.intTipoBusqueda =tipoAgrupador;
   }
@@ -340,6 +380,8 @@ buscaPorDistribuidor(e: Event){
     //this.dataApiInstalationRequest.selectedInstalationRequest = Object.assign({},Request);
 
 }
+
+
 
 //////////////paginaciones
 
@@ -362,15 +404,22 @@ handlePageUnidadesVIN(e: PageEvent){
   
 }
 
+
+
 expandeContrae(expandeContrae: number){
   //alert(tipoAgrupador);
 
 if(expandeContrae ==1){
   this.muestraModelos = true;
 this.ListClasesCorpo.forEach((item:{bitExpandir:Boolean}) =>{
-  console.log(item.bitExpandir);
+  //console.log(item.bitExpandir);
   item.bitExpandir = true;
 });
+
+//this.ListClasesCorpoByAntiguedad.forEach((item2:{bitExpandir:Boolean}) =>{
+  //console.log(item2.bitExpandir);
+  //item2.bitExpandir = true;
+//});
 //this.ListModelos.forEach((item2:{bitExpandir:Boolean}) =>{
   //console.log(item2.bitExpandir);
   //item2.bitExpandir = true;
@@ -379,15 +428,22 @@ this.ListClasesCorpo.forEach((item:{bitExpandir:Boolean}) =>{
 else{
   this.muestraModelos = false;
   this.ListClasesCorpo.forEach((item:{bitExpandir:Boolean}) =>{
-    console.log(item.bitExpandir);
+    //console.log(item.bitExpandir);
     item.bitExpandir = false;
   });
+
+  //this.ListClasesCorpoByAntiguedad.forEach((item2:{bitExpandir:Boolean}) =>{
+    //console.log(item2.bitExpandir);
+    //item2.bitExpandir = false;
+  //});
   //this.ListModelos.forEach((item2:{bitExpandir:Boolean}) =>{
     //console.log(item2.bitExpandir);
     //item2.bitExpandir = false ;
   //})
 }
 }
+
+
 
 /////EXCEL
 
@@ -398,5 +454,84 @@ ExportTOExcelUnidades() {
   XLSX.writeFile(wb, 'DocumentosCargadosHistorico.xlsx');  
 }
 
+enviarAPendientes(listUnidades: any[]){
+  this.unidadesServices.mandaAPendientes(listUnidades)
+  .subscribe(complete =>{
+    alert("Unidades enviadas a pendientes");
+});
+      
+}
+
+///modales
+
+openDialogTraspasos(unidadesTraspaso: any): void {
+  const dialogRef = this.dialog.open(TrasladosDialogComponent, {
+    width: '1000px',
+    data: {unidadesModel: unidadesTraspaso
+        },
+  });
+}
 
 }
+
+@Component({
+  selector: 'app-traslados-dialog',
+  templateUrl: '../traslados-dialog/traslados-dialog.component.html',
+  styleUrls: ['../traslados-dialog/traslados-dialog.component.css']
+})
+ 
+export class TrasladosDialogComponent implements OnInit {
+
+  ListLocalidadesCombo: any[] = [];
+  nuevaLocalidad: any;
+  localidadRepetida: boolean = false;
+  errorLocalidad: boolean = false;
+
+  constructor(public unidadesServices: UnidadesService,
+    public dialogRef: MatDialogRef<TrasladosDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+  ) {} 
+
+  ngOnInit(): void {
+    this.unidadesServices
+    .getLocalidadesCombo(this.data.unidadesModel.gfx)
+    .subscribe((_ListLocalidadesCombo:any[]) => {
+      this.ListLocalidadesCombo = _ListLocalidadesCombo
+      });
+  }
+
+  getNuevaLocalidad(e: Event){
+    this.localidadRepetida = false;
+    this.errorLocalidad = false;
+    this.nuevaLocalidad = e;
+  }
+
+  guardarSolicitudTraspaso(unidadesModel: any, tipoConsulta: number){
+
+    if(this.nuevaLocalidad == undefined
+        && tipoConsulta == 1){
+      this.errorLocalidad = true;
+    }
+    else if(this.nuevaLocalidad == unidadesModel.idLocalidad
+      && tipoConsulta == 1){
+      this.localidadRepetida = true;
+    }
+    else{
+      if(tipoConsulta == 1){
+        unidadesModel.idLocalidadNueva = this.nuevaLocalidad;
+      }
+      else{
+        unidadesModel.idLocalidadNueva = unidadesModel.strLocalidadNueva;
+      }
+      
+      this.unidadesServices.solicitaTraspaso(unidadesModel,tipoConsulta)
+      .subscribe(complete =>{
+        alert("Proceso terminado con exito");
+    });
+    
+  }
+}
+
+}
+
+

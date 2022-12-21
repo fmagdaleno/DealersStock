@@ -11,7 +11,7 @@ import { SpinnerComponent } from './shared/components/spinner/spinner.component'
 import { SpinnerInterceptor } from './shared/interceptor/spinner.interceptor';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Routes, RouterModule } from '@angular/router';
-import { UnidadesComponent } from './unidades/unidades.component';
+import { UnidadesComponent,TrasladosDialogComponent } from './unidades/unidades.component';
 import {MatIconModule} from '@angular/material/icon';
 import {MatToolbarModule} from '@angular/material/toolbar';
 //import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
@@ -31,7 +31,10 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatSelectModule} from '@angular/material/select';
 import { CapturaVentaComponent } from './capturaVenta/captura-venta.component';
 import { ModelosPipe } from './pipes/modelos.pipe';
-  
+import { MatDialogModule } from '@angular/material/dialog';
+
+
+
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -46,7 +49,6 @@ const routes: Routes = [
         }
     ]
 },   
-
 ];
 
 
@@ -59,7 +61,8 @@ const routes: Routes = [
     PaginationPipe,
     NumerosPartePipe,
     CapturaVentaComponent,
-    ModelosPipe
+    ModelosPipe,
+    TrasladosDialogComponent
 
   ],
   imports: [
@@ -81,7 +84,8 @@ const routes: Routes = [
     MatPaginatorModule,
     FormsModule,
     MatMenuModule,
-    MatSelectModule
+    MatSelectModule,
+    MatDialogModule
 ],
   providers: [{ 
     provide:HTTP_INTERCEPTORS,
