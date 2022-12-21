@@ -1,0 +1,110 @@
+<table class="table" style="width: 100%;">
+    <tr>
+      <td >
+        <table class="table" style="width: 100%;">
+          <tr>
+            <td>
+              <h1 mat-dialog-title>Carga de XML</h1>
+              <div mat-dialog-content>
+                <form>
+                    <input id="file1" type="file" ng2FileSelect [uploader]="uploader" multiple />
+                    <table class="table">
+                    <thead>
+                      <tr>
+                        <th width="150px">Nombre XML</th>                  
+                        <th>Estatus</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of uploader.queue">
+                        <td><strong>{{ item?.file?.name }}</strong></td>                  
+                        <td class="text-center">
+                          <span *ngIf="item.isSuccess"><mat-icon>done</mat-icon></span>
+                          <span *ngIf="item.isError"><mat-icon>close</mat-icon></span>
+                        </td>
+                        <td nowrap>
+                          <!--<button type="button" class="btn btn-info btn-xs" (click)="Leer(item)" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                            <span class="fa icon-cloud-upload mr"></span> Leer
+                          </button>
+                          <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
+                            <span class="icon-close mr"></span> Cancelar
+                          </button>-->
+                          <button mat-raised-button color="warn" (click)="item.remove()">
+                              Quitar
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </form>
+              </div>
+            </td>
+            <td style="vertical-align:top; width: 100%;">
+              <div mat-dialog-actions>
+                <button mat-raised-button color="primary" (click)="uploadFile(uploader.queue)" [disabled]="!uploader.getNotUploadedItems().length">
+                   Leer Todos
+                </button>
+                <button mat-raised-button color="warn"  (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
+                    Quitar Todos
+                </button>
+              </div>              
+            </td>
+            <td style="vertical-align:top;">
+              <button mat-button (click)="onNoClick()">Cerrar</button>  
+            </td>
+          </tr>
+        </table>
+      </td>
+      </tr>
+      <tr>
+        <td style="vertical-align:top; width: 100%;">
+          <h1 mat-dialog-title style="width: 100%;">Selección de VIN</h1>
+          <table class="table" style="width: 100%;">
+            <thead>
+              <tr>
+                <th>serie</th>
+                <th>rfcEmisor</th>
+                <th>nombreEmisor</th>
+                <th>rfcReceptor</th>
+                <th>nombreReceptor</th>
+                <th>descripcion</th>
+                <th>vin</th>
+                <th>uuid</th>
+                <th>moneda</th>
+                <th>total</th>
+                <th>fecha</th>
+                <th>Pedido</th>
+                <th>Modelo</th>
+                <th>ClasCorp</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of factXml">
+                <td>{{ item.serie }}</td>
+                <td>{{ item.rfcEmisor }}</td>
+                <td>{{ item.nombreEmisor }}</td>
+                <td>{{ item.rfcReceptor }}</td>
+                <td>{{ item.nombreReceptor }}</td>
+                <td>{{ item.descripcion.length >= 100  ? item.descripcion.substring(0, 100) + '...' : item.descripcion }}</td>
+                <td>{{ item.vin }}</td>
+                <td>{{ item.uuid }}</td>
+                <td>{{ item.moneda }}</td>          
+                <td>{{ item.total | currency  }}</td>
+                <td>{{ item.fecha }}</td>
+                <td>{{ item.cD_PEDIDO }}</td>
+                <td>{{ item.nB_MODELO }}</td>
+                <td>{{ item.nB_CLASIFCORP }}</td>
+                <td>
+                  <button *ngIf="item.mensaje == ''" mat-icon-button color="primary" [mat-dialog-close]="item" >
+                    <mat-icon>check_circle</mat-icon>
+                  </button>                
+                  <span *ngIf="item.mensaje != ''"><mat-icon color="warn">cancel</mat-icon>{{item.mensaje}}</span>
+              </td>
+              </tr>
+          </table>
+        </td>
+    </tr>
+</table>
+

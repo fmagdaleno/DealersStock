@@ -1,1 +1,403 @@
-<p>captura-venta works!</p>
+<table style="width: 100%;">
+    <thead>
+        <td style="text-align:center;" colspan="2">
+           <h3 style="margin: 5px">REGISTRO DE VENTA</h3> 
+           <div style="position: absolute; margin-top: -30px;">
+               <button mat-raised-button (click)="openDialog()">Cargar y Selección de VIN</button>
+           </div>
+        </td>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="labeldatos" style="width:150px;" colspan="2">  
+                <table style="overflow:hidden; width: 100%;">
+                    <tr>
+                        <td>
+                            VIN seleccionado: {{ xm.vin }}
+                        </td>
+                        <td>
+                            Descripción: {{ xm.descripcion }}
+                        </td>
+                        <td>
+                            Pedido: {{ xm.cD_PEDIDO }}
+                        </td>
+                        <td>
+                            Modelo: {{ xm.nB_MODELO }} 
+                        </td>
+                        <td>
+                            ClasCorp: {{ xm.nB_CLASIFCORP }} 
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 50%;">
+                <table style="overflow:hidden; width: 100%;">
+                    <thead>
+                        <td style="text-align:center;background-color:rgb(241, 241, 241);" colspan="2">
+                           <h4 style="margin: 3px">DATOS CONTACTO CLIENTE</h4> 
+                        </td>
+                    </thead>
+                    <tbody>                        
+                        <tr>
+                            <td class="labeldatos" style="width:150px;">Fecha Factura:</td>
+                            <td style="background-color:white;">                                
+                                <mat-form-field>
+                                    <input matInput [matDatepicker]="fecFac" [ngModelOptions]="{standalone: true}" [(ngModel)]="startDate">
+                                    <mat-datepicker-toggle matSuffix [for]="fecFac"></mat-datepicker-toggle>
+                                    <mat-datepicker #fecFac></mat-datepicker>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="labeldatos">RFC Cliente:</td>
+                            <td style="background-color:white;">
+                                <mat-form-field style="width: 100%;" appearance = "standard">
+                                    <input matInput [formControl]="rfcReceptorFrmCtl" >
+                                    <mat-error *ngIf="rfcReceptorFrmCtl.hasError('required')">
+                                        RFC es <strong>requerido</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="labeldatos">Nombre del Contacto:</td>
+                            <td style="background-color:white;">                            
+                                <mat-form-field style="width: 100%;" appearance = "standard">
+                                    <input matInput [formControl]="contactoFrmCtl" >
+                                    <mat-error *ngIf="contactoFrmCtl.hasError('required')">
+                                        Contacto es <strong>requerido</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="labeldatos">Télefono Fijo:</td>
+                            <td style="background-color:white;">                     
+                                <mat-form-field style="width: 100%;">
+                                    <input matInput  [formControl]="telfijoFrmCtl" >
+                                    <mat-error *ngIf="telfijoFrmCtl.hasError('required')">
+                                        Contacto es <strong>requerido</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="labeldatos">Télefono Móvil:</td>
+                            <td style="background-color:white;">                     
+                                <mat-form-field style="width: 100%;">
+                                    <input matInput  [formControl]="telmovFrmCtl" >
+                                    <mat-error *ngIf="telmovFrmCtl.hasError('required')">
+                                        Contacto es <strong>requerido</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="labeldatos">Correo Electrónico:</td>
+                            <td style="background-color:white;">
+                                <mat-form-field  style="width: 100%;">
+                                    <input matInput [formControl]="emailFormControl"
+                                        [errorStateMatcher]="matcher" >
+                                    <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+                                    Ingrese un correo válido
+                                    </mat-error>
+                                    <mat-error *ngIf="emailFormControl.hasError('required')">
+                                    Correo es <strong>requerido</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="labeldatos">Tipo de Cliente:</td>
+                            <td style="background-color:white;">
+                                <mat-form-field style="width: 100%;">
+                                    <mat-select [formControl]="tipCliFormControl" [(value)]="selectedTipcl">
+                                      <mat-option (onSelectionChange)="changeCli($event)" *ngFor="let tic of listTipoCli" [value]="tic.id_TipoCliente">
+                                        {{tic.nb_TipoCliente}}
+                                      </mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="tipCliFormControl.hasError('required')">
+                                        Tipo cliente es <strong>requerido</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="labeldatos">Rol:</td>
+                            <td style="background-color:white;">                             
+                                <mat-form-field style="width: 100%;">
+                                    <mat-select [formControl]="rolFormControl" [(value)]="selectedRol">
+                                      <mat-option *ngFor="let rl of listRoles" [value]="rl.iD_Personal_Puesto">
+                                        {{rl.descripcion_Puesto}}
+                                      </mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="rolFormControl.hasError('required')">
+                                        Rol es <strong>requerido</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="labeldatos">Puesto:</td>
+                            <td style="background-color:white;">                     
+                                <mat-form-field style="width: 100%;">
+                                    <input matInput [formControl]="puestoFormControl">
+                                    <mat-error *ngIf="puestoFormControl.hasError('required')">
+                                        Puesto es <strong>requerido</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="width: 50%; vertical-align:top">
+                <table style="overflow:hidden; width: 100%;">
+                    <thead>
+                        <td style="text-align:center;background-color:rgb(241, 241, 241);" colspan="2">
+                           <h4 style="margin: 3px">DIRECCIÓN CLIENTE</h4> 
+                        </td>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="labeldatos" style="width:150px;">Sucursal:</td>
+                            <td style="background-color:white;">                
+                                <mat-form-field style="width: 100%;">
+                                    <mat-select [(value)]="selectedSuc">
+                                      <mat-option *ngFor="let rl of listSuc" [value]="rl.idLocalidad">
+                                        {{rl.localidad}}
+                                      </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="labeldatos">Razón Social Cliente:</td>
+                            <td style="background-color:white;">                     
+                                <mat-form-field style="width: 100%;">
+                                    <input matInput [formControl]="razonFormControl" >
+                                    <mat-error *ngIf="razonFormControl.hasError('required')">
+                                        Razón Social es <strong>requerido</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="labeldatos">CP:</td>
+                            <td style="background-color:white;">                     
+                                <mat-form-field style="width: 100%;">
+                                    <input matInput type="number" min="1" OnlyNumber="true" [formControl]="cpFormControl" (keydown.enter)="cpEnter($event)" maxlength="5" >
+                                    <mat-error *ngIf="cpFormControl.hasError('required')">
+                                        Código Postal es <strong>requerido</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="labeldatos">Estado:</td>
+                            <td style="background-color:white;">       
+                                <mat-form-field style="width: 100%;">
+                                    <mat-select [formControl]="edoFormControl" [(value)]="selectededo">
+                                      <mat-option (onSelectionChange)="changeEdo($event)" *ngFor="let rl of listEstado" [value]="rl.idEstado">
+                                        {{rl.descEstado}}
+                                      </mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="edoFormControl.hasError('required')">
+                                        Estado es <strong>requerido</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="labeldatos">Ciudad:</td>
+                            <td style="background-color:white;">       
+                                <mat-form-field style="width: 100%;">
+                                    <mat-select [formControl]="ciuFormControl" [(value)]="selectedLoc">
+                                      <mat-option *ngFor="let rl of listCiudades" [value]="rl.id_municipio">
+                                        {{rl.nb_municipio}}
+                                      </mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="ciuFormControl.hasError('required')">
+                                        Ciudad es <strong>requerido</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="labeldatos">Colonia/Calle y No:</td>
+                            <td style="background-color:white;">                     
+                                <mat-form-field style="width: 100%;">
+                                    <input matInput [formControl]="domFormControl" >
+                                    <mat-error *ngIf="domFormControl.hasError('required')">
+                                        Domicilio es <strong>requerido</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="background-color:rgb(241, 241, 241);">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <table style="overflow:hidden; width: 100%;">        
+                    <tr>
+                        <td class="labeldatos" style="width:150px;">Aplicación:</td>
+                        <td style="background-color:white;">       
+                            <mat-form-field style="width: 100%;">
+                                <mat-select [formControl]="aplFormControl" [(value)]="selectedApl">
+                                  <mat-option *ngFor="let rl of listApli" [value]="rl.iD_Aplicacion">
+                                    {{rl.descripcion}}
+                                  </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="aplFormControl.hasError('required')">
+                                    Aplicación es <strong>requerido</strong>
+                                </mat-error>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="labeldatos">Aplicación Otra:</td>
+                        <td style="background-color:white;">                 
+                            <mat-form-field style="width: 100%;">
+                                <input matInput [ngModelOptions]="{standalone: true}" [(ngModel)]="aplOtr" >
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="labeldatos">Tipo de Venta:</td>
+                        <td style="background-color:white;">       
+                            <mat-form-field style="width: 100%;">
+                                <mat-select [formControl]="tipVenFormControl"  [(value)]="selectedVta">
+                                  <mat-option *ngFor="let rl of listClas" [value]="rl.cd_clasflotas">
+                                    {{rl.tx_descripcion + '(' + rl.tx_NumUnidades + ')'}}
+                                  </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="tipVenFormControl.hasError('required')">
+                                    Tipo de Venta es <strong>requerido</strong>
+                                </mat-error>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="labeldatos">Vendedor:</td>
+                        <td style="background-color:white;">       
+                            <mat-form-field style="width: 100%;">
+                                <mat-select [formControl]="venFormControl" [(value)]="selectedVen">
+                                  <mat-option *ngFor="let rl of listVende" [value]="rl.iD_Vendedor">
+                                    {{rl.nombre + ' ' + rl.aPaterno + ' ' + rl.aMaterno }}
+                                  </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="venFormControl.hasError('required')">
+                                    Vendedor es <strong>requerido</strong>
+                                </mat-error>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="labeldatos">Observaciones:</td>
+                        <td style="background-color:white;">
+                            <mat-form-field style="width: 100%;">
+                              <textarea matInput [formControl]="obserFormControl"></textarea>
+                              <mat-error *ngIf="obserFormControl.hasError('required')">
+                                  Observaciones es <strong>requerido</strong>
+                              </mat-error>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td style="vertical-align:top;">
+                <table style="overflow:hidden; width: 100%;">
+                    <tr>
+                        <td class="labeldatosFinan" style="width:150px;">Financiamiento:</td>
+                        <td style="background-color:rgb(241, 241, 241);">
+                            <mat-radio-group [(ngModel)]="selectedFinan" (ngModelChange)="onFinanChange()">
+                                <mat-radio-button value="1">Si</mat-radio-button>
+                                <mat-radio-button value="2">No</mat-radio-button>
+                            </mat-radio-group>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="labeldatosFinan">Entidad Financiamiento:</td>
+                        <td style="background-color:white;">
+                            <mat-form-field style="width: 100%;">
+                                <mat-select [formControl]="entiFinanFormControl" [(value)]="selectedEntFin" >
+                                  <mat-option *ngFor="let rl of listEntiFinan" [value]="rl.cD_ENTIDAD">
+                                    {{rl.tX_NOMBRE}}
+                                  </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="entiFinanFormControl.hasError('required')">
+                                    Entidad Financiera es <strong>requerido</strong>
+                                </mat-error>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="labeldatosFinan">Otra:</td>
+                        <td style="background-color:white;">              
+                            <mat-form-field style="width: 100%;">
+                                <input matInput [ngModelOptions]="{standalone: true}" [(ngModel)]="otra" [disabled]="bFinan" >
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="labeldatosFinan">Fecha Estimada de pago a NFCx:</td>
+                        <td style="background-color:white;">                     
+                            <mat-form-field>
+                                <input matInput [formControl]="fecEstFormControl" [matDatepicker]="fecEst" [disabled]="bFinan" >
+                                <mat-datepicker-toggle matSuffix [for]="fecEst"></mat-datepicker-toggle>
+                                <mat-datepicker #fecEst></mat-datepicker>
+                            </mat-form-field>
+                            <mat-error *ngIf="fecEstFormControl.hasError('required')">
+                                Fecha Estimada NFCx es <strong>requerido</strong>
+                            </mat-error>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="labeldatosFinan">Tipo de Financiamiento:</td>
+                        <td style="background-color:white;">
+                            <mat-form-field style="width: 100%;">
+                                <mat-select [formControl]="tipoFinFormControl" [(value)]="selectedTipoFin" >
+                                  <mat-option *ngFor="let rl of listTipoFinan" [value]="rl.id_TipoFinanciamiento">
+                                    {{rl.nb_TipoFinanciamiento}}
+                                  </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="tipoFinFormControl.hasError('required')">
+                                    Tipo Financiamiento es <strong>requerido</strong>
+                                </mat-error>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:center;" colspan="2">
+                <button mat-raised-button (click)="cancelar()">
+                    Cancelar
+                 </button>&nbsp;&nbsp; 
+                 <button mat-raised-button color="primary" (click)="guardar()" [disabled]="xm.vin==''">
+                     Guardar
+                 </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
