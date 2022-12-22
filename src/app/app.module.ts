@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { SpinnerModule } from './shared/components/spinner/spinner.module';
 import { SpinnerComponent } from './shared/components/spinner/spinner.component';
@@ -31,10 +31,15 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatSelectModule} from '@angular/material/select';
 import { CapturaVentaComponent } from './capturaVenta/captura-venta.component';
 import { ModelosPipe } from './pipes/modelos.pipe';
-import { MatDialogModule } from '@angular/material/dialog';
+import { FileUploadModule } from 'ng2-file-upload';
 
-
-
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatButtonModule } from "@angular/material/button";
+import { MatInputModule } from "@angular/material/input";
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatRadioModule } from '@angular/material/radio'; 
+import { DialogOverviewExampleDialog } from './../../src/app/capturaVenta/captura-ventaxml.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -49,6 +54,17 @@ const routes: Routes = [
         }
     ]
 },   
+{
+  path: 'capturaventa',
+  component: CapturaVentaComponent,
+  children: [
+      { 
+          path: 'capturaventa',
+          component: CapturaVentaComponent 
+      }
+  ]
+},
+
 ];
 
 
@@ -62,7 +78,8 @@ const routes: Routes = [
     NumerosPartePipe,
     CapturaVentaComponent,
     ModelosPipe,
-    TrasladosDialogComponent
+    TrasladosDialogComponent,
+    DialogOverviewExampleDialog
 
   ],
   imports: [
@@ -83,9 +100,19 @@ const routes: Routes = [
     MatCheckboxModule,
     MatPaginatorModule,
     FormsModule,
+    ReactiveFormsModule,
     MatMenuModule,
     MatSelectModule,
+    FileUploadModule,
+    MatButtonModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule, 
+    MatRadioModule,
     MatDialogModule
+],
+exports: [
+    MatDialogModule,
 ],
   providers: [{ 
     provide:HTTP_INTERCEPTORS,

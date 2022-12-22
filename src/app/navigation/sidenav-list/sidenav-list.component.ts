@@ -1,8 +1,8 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { HttpClientModule, HttpClient, HttpHeaders} from "@angular/common/http"
 import {MatIconModule} from '@angular/material/icon';
-import {SeguridadService} from '../../services/seguridad/seguridad.service';
-import {UserRoles} from '../../models/usuarios/usuarios.component';
+//import {SeguridadService} from '../../services/seguridad/seguridad.service';
+//import {UserRoles} from '../../models/usuarios/usuarios.component';
 
 @Component({
     selector: 'app-sidenav-list',
@@ -13,7 +13,8 @@ export class SidenavListComponent implements OnInit {
     @Output() sidenavClose = new EventEmitter();
     usuariosRoles:any;
 
-    constructor(private seguridadService:SeguridadService) { }
+    //constructor(private seguridadService:SeguridadService) { }
+    constructor() { }
 
     
 
@@ -27,9 +28,9 @@ export class SidenavListComponent implements OnInit {
     }
 
     getListFuncionalidadRol(): void{
-        this.seguridadService
-        .GetUserProfile()
-        .subscribe((_UserRoles:any)  => {this.usuariosRoles = _UserRoles}) ;
+        //this.seguridadService
+        //.GetUserProfile()
+        //.subscribe((_UserRoles:any)  => {this.usuariosRoles = _UserRoles}) ;
       }
 
      
