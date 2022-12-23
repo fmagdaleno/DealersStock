@@ -160,7 +160,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <button class="MyButton"  type="button" (click)="enviarAPendientes(ListUnidades)"><mat-icon class="material-icons color_white">compare_arrows</mat-icon>Traspasar entre sucursales</button>
+                      <button class="MyButton"  type="button" (click)="openDialogMasiveTraspasos(ListUnidades)"><mat-icon class="material-icons color_white">compare_arrows</mat-icon>Traspasar entre sucursales</button>
                       
                     </td>
                     <td>
@@ -254,7 +254,7 @@
                                       <!--<th scope="row">{{ i + 1 }}</th>-->
                                       <td *ngIf="col1">
                                         <mat-checkbox *ngIf="unidad.intUnidadPendiente == 0"
-                                        [checked]="false" 
+                                        [checked]="unidad.bitChecked" 
                                         (change)="valueChange(unidad,$event)">
                                         </mat-checkbox>
                                         {{unidad.vin}} 
@@ -400,7 +400,7 @@
                                                         <!--<th scope="row">{{ i + 1 }}</th>--> 
                                                         <td *ngIf="col1">
                                                           <mat-checkbox *ngIf="unidad.intUnidadPendiente == 0"
-                                                          [checked]="false" 
+                                                          [checked]="unidad.bitChecked" 
                                                           (change)="valueChange(unidad,$event)">
                                                           </mat-checkbox>
                                                           {{unidad.vin}} 
@@ -554,7 +554,7 @@
                       <!--<th scope="row">{{ i + 1 }}</th>-->
                       <td *ngIf="col1">
                         <mat-checkbox *ngIf="unidad.intUnidadPendiente == 0"
-                        [checked]="false" 
+                        [checked]="unidad.bitChecked" 
                         (change)="valueChange(unidad,$event)">
                         </mat-checkbox> 
                         {{unidad.vin}}

@@ -21,9 +21,12 @@ export class Group {
   }
 }
 
+
 export interface DialogData {
   unidadesModel: any;
 }
+
+
 
 @Component({
   selector: 'app-unidades',
@@ -43,6 +46,7 @@ export class UnidadesComponent implements OnInit {
   ListDistribuidoresCombo: any[] = [];
   ListLocalidadesCombo: any[] = [];
   ListClasCorpoCombo: any[] = [];
+  listaSeleccionada:any[] = [];
   ListModelosCount: number = 0;
   intTipoBusqueda: number = 1;
   IdClasCorpActual:number = 0;
@@ -61,6 +65,9 @@ export class UnidadesComponent implements OnInit {
   stridClasCorpo: any = 0;
   GFX:any = 0;
   localidad:any = ' ';
+  ListUnidadesDialog: any[] = [];
+  dialogRefMasive:any;
+ 
 
   vinBus = '';
   vinBus2 = '';
@@ -458,28 +465,51 @@ enviarAPendientes(listUnidades: any[]){
   this.unidadesServices.mandaAPendientes(listUnidades)
   .subscribe(complete =>{
     alert("Unidades enviadas a pendientes");
-});
-      
+});   
 }
+
 
 ///modales
 
 openDialogTraspasos(unidadesTraspaso: any): void {
   const dialogRef = this.dialog.open(TrasladosDialogComponent, {
     width: '1000px',
-    data: {unidadesModel: unidadesTraspaso
+    data: {UnidadesModel: unidadesTraspaso
         },
   });
 }
 
+openDialogMasiveTraspasos(unidadesTraspaso: any[]): void {
+  this.ListUnidadesDialog = unidadesTraspaso.filter(uni => uni.bitChecked);
+  this.ListUnidadesDialog.forEach(unidad=>{
+    this.unidadesServices
+    .getLocalidadesCombo(unidad.gfx)
+    .subscribe((_ListLocalidadesCombo:any[]) => {
+      unidad.listlocalidades = _ListLocalidadesCombo
+      });
+      console.log(unidad.listlocalidades);
+  });
+  const dialogRefMasive = this.dialog.open(MasiveTrasladosComponent, {
+    width: '1000px',
+    data:this.ListUnidadesDialog , 
+  });
+  //console.log(this.ListUnidadesDialog);
 }
+
+
+
+
+
+}
+
+
+///////////////////////TRASLADOS DIALOG
 
 @Component({
   selector: 'app-traslados-dialog',
   templateUrl: '../traslados-dialog/traslados-dialog.component.html',
   styleUrls: ['../traslados-dialog/traslados-dialog.component.css']
 })
- 
 export class TrasladosDialogComponent implements OnInit {
 
   ListLocalidadesCombo: any[] = [];
@@ -534,4 +564,79 @@ export class TrasladosDialogComponent implements OnInit {
 
 }
 
+///////////////////////TRASLADOS MASIVOS
 
+@Component({
+  selector: 'app-masive-traslados',
+  templateUrl: '../masive-traslados/masive-traslados.component.html',
+  styleUrls: ['../masive-traslados/masive-traslados.component.css']
+})
+ 
+
+export class MasiveTrasladosComponent implements OnInit {
+
+  ListLocalidadesCombo: any[] = [];
+  nuevaLocalidad: any;
+  localidadRepetida: boolean = false;
+  errorLocalidad: boolean = false;
+  maxSize: boolean = false;
+
+  constructor(public unidadesServices: UnidadesService,
+    public dialogRef: MatDialogRef<MasiveTrasladosComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any[],
+  ) {} 
+
+  ngOnInit(): void {
+
+  }
+
+  maximizeDialog(){
+    this.dialogRef.addPanelClass('full-screen-modal');
+    this.dialogRef.updateSize('100vw','100vh');
+    this.maxSize = true;
+
+  }
+
+  minimizeDialog(){
+    this.dialogRef.updateSize('1000px');
+    this.maxSize = false;
+
+  }
+
+  closeDialog(){
+    this.dialogRef.close();
+  }
+
+  getNuevaLocalidad(e: Event){
+    this.localidadRepetida = false;
+    this.errorLocalidad = false;
+    this.nuevaLocalidad = e;
+  }
+
+  guardarSolicitudTraspaso(unidadesModel: any, tipoConsulta: number){
+
+    if(this.nuevaLocalidad == undefined
+        && tipoConsulta == 1){
+      this.errorLocalidad = true;
+    }
+    else if(this.nuevaLocalidad == unidadesModel.idLocalidad
+      && tipoConsulta == 1){
+      this.localidadRepetida = true;
+    }
+    else{
+      if(tipoConsulta == 1){
+        unidadesModel.idLocalidadNueva = this.nuevaLocalidad;
+      }
+      else{
+        unidadesModel.idLocalidadNueva = unidadesModel.strLocalidadNueva;
+      }
+      
+      this.unidadesServices.solicitaTraspaso(unidadesModel,tipoConsulta)
+      .subscribe(complete =>{
+        alert("Proceso terminado con exito");
+    });
+    
+  }
+}
+
+}
