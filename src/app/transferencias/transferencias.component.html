@@ -1,0 +1,50 @@
+<table style="width: 100%;">
+    <tr>
+        <td style="text-align: right;">
+            <mat-icon *ngIf="!maxSize" (click)="maximizeDialog()">unfold_more</mat-icon>
+            <mat-icon *ngIf="maxSize" (click)="minimizeDialog()">unfold_less</mat-icon>
+            <mat-icon  (click)="closeDialog()">clear</mat-icon>
+        </td>
+    </tr>
+</table>
+
+<h2 style="color:rgb(42, 42, 138);">Solicitar transferencia de unidades</h2>
+<!--{{this.data | json}}-->
+<hr>
+<p></p>
+
+<table style="width:90%">
+    <tr>
+        <td>
+            <label >VIN</label>
+        </td>
+        <td>
+            <label >Distribuidor</label>
+        </td>
+        <td>
+            <label >Sucursal</label>
+        </td>
+
+        <td>
+
+        </td>
+        <td></td>
+    </tr>
+    <tr *ngFor="let uni of data">
+        <td>
+            <label >{{uni.vin}}</label>
+        </td>
+        <td>
+            <label >{{uni.strNombreDealer}}</label>
+        </td>
+        <td>
+            <label >{{uni.strLocalidad}}</label>
+        </td>
+
+        <td>
+            <button *ngIf="uni.intIdTraspaso == 0"    type="button" ><mat-icon>check</mat-icon>Solicitar</button>
+            
+        </td>
+
+    </tr>
+</table>

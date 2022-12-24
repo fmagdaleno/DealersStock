@@ -1,0 +1,51 @@
+<!--{{data | json}}-->
+<table style="width: 100%;">
+    <tr>
+        <td style="text-align: right;">
+            <mat-icon *ngIf="!maxSize" (click)="maximizeDialog()">unfold_more</mat-icon>
+            <mat-icon *ngIf="maxSize" (click)="minimizeDialog()">unfold_less</mat-icon>
+            <mat-icon  (click)="closeDialog()">clear</mat-icon>
+        </td>
+    </tr>
+</table>
+
+<h2 style="color:rgb(42, 42, 138);">Unidades Encontradas</h2>
+<!--{{this.data | json}}-->
+<hr>
+<p></p>
+
+<table style="width:90%">
+    <tr>
+        <td>
+            <label >VIN</label>
+        </td>
+        <td>
+            <label >Clasificación corporativa</label>
+        </td>
+        <td>
+            <label >Clasificación status</label>
+        </td>
+        <td>
+
+        </td>
+        <td></td>
+    </tr>
+    <tr *ngFor="let uni of ListUnidades">
+        <td>
+            <label >{{uni.vin}}</label>
+        </td>
+        <td>
+            <label >{{uni.claseCorporativa}}</label>
+        </td>
+        <td>
+            <label >{{uni.status}}</label>
+        </td>
+
+        <td>
+            <button  (click)="openDetalleVIN(uni.vin)"  type="button" ><mat-icon>list</mat-icon>Ver detalle</button>
+            
+        </td>
+
+    </tr>
+</table>
+

@@ -96,4 +96,14 @@ export class UnidadesService {
     .pipe(map(data => data));
   }
 
+  getAllUnidadesPoVIN( strBusqueda:string){
+    const url_api_Request = environment.hostUrl + '/vw_Unidades/GetunidadesByVIN/' + strBusqueda + '/';
+    return this.http.get<any[]>(url_api_Request); 
+  }
+
+  getDetalleVIN( strVIN:string){
+    const url_api_Request = environment.hostUrl + '/vw_Unidades/GetDetalleVIN/' + strVIN + '/';
+    return this.http.get<any>(url_api_Request); 
+  }
+
 }

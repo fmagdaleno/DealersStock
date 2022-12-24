@@ -12,10 +12,15 @@
   </div>
 
   <div class="row" style="width:100%; text-align:right" >
-    <div class="col-md-8" style="color: white;"  >
+
+    <div class="col-md-8">
+      <form  #formActivationRequestSearch="ngForm">
+        <mat-icon style="color:black;" class="material-icons color_white">search</mat-icon>
+       <input style="font-size:medium; width: 20%; border-style: solid; border-color: gainsboro;" placeholder="VIN"  (change)="openDialogListadoVIN (formActivationRequestSearch)" id="formBusquedaGral" name="formBusquedaGral" class="form-control"  [(ngModel)]="vinBus2">
+     </form>
      
-      <a style="color:orange;" mat-list-item routerLink="/home"> <mat-icon>home</mat-icon></a>
-      <!--{{UsuarioFirmado.nombreCompleto}} -->
+      <!--<a style="color:orange;" mat-list-item routerLink="/home"> <mat-icon>home</mat-icon></a>
+      {{UsuarioFirmado.nombreCompleto}} -->
     </div>
     <div class="col-md-4" >
       

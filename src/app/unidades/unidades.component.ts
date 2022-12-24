@@ -469,16 +469,40 @@ enviarAPendientes(listUnidades: any[]){
 }
 
 
-///modales
+///////////////////////////////////////////////////////////////////////////////////////modales
 
+/////////Publicar a la red
+openDialogPublicarRed(unidadesTraspaso: any[]): void {
+  this.ListUnidadesDialog = unidadesTraspaso.filter(uni => uni.bitChecked);
+
+  const dialogRefMasive = this.dialog.open(PublicarRedComponent, {
+    width: '1000px',
+    data:this.ListUnidadesDialog , 
+  });
+  //console.log(this.ListUnidadesDialog);
+}
+
+/////////Traspasos
 openDialogTraspasos(unidadesTraspaso: any): void {
   const dialogRef = this.dialog.open(TrasladosDialogComponent, {
     width: '1000px',
-    data: {UnidadesModel: unidadesTraspaso
+    data: {unidadesModel: unidadesTraspaso
         },
   });
 }
 
+/////////transferencias
+openDialogMasiveTransferencias(unidadesTraspaso: any[]): void {
+  this.ListUnidadesDialog = unidadesTraspaso.filter(uni => uni.bitChecked);
+
+  const dialogRefMasive = this.dialog.open(TransferenciasComponent, {
+    width: '1000px',
+    data:this.ListUnidadesDialog , 
+  });
+  //console.log(this.ListUnidadesDialog);
+}
+
+//////traspasos masivos
 openDialogMasiveTraspasos(unidadesTraspaso: any[]): void {
   this.ListUnidadesDialog = unidadesTraspaso.filter(uni => uni.bitChecked);
   this.ListUnidadesDialog.forEach(unidad=>{
@@ -496,14 +520,9 @@ openDialogMasiveTraspasos(unidadesTraspaso: any[]): void {
   //console.log(this.ListUnidadesDialog);
 }
 
-
-
-
-
 }
 
-
-///////////////////////TRASLADOS DIALOG
+////////////////////////traslados aceptacion
 
 @Component({
   selector: 'app-traslados-dialog',
@@ -564,6 +583,51 @@ export class TrasladosDialogComponent implements OnInit {
 
 }
 
+
+///////////////////////TRANSFERENCIAS DIALOG
+
+@Component({
+  selector: 'app-transferencias',
+  templateUrl: '../transferencias/transferencias.component.html',
+  styleUrls: ['../transferencias/transferencias.component.css']
+})
+export class TransferenciasComponent implements OnInit {
+
+  ListLocalidadesCombo: any[] = [];
+  nuevaLocalidad: any;
+  localidadRepetida: boolean = false;
+  errorLocalidad: boolean = false;
+  maxSize: boolean = false;
+
+  constructor(public unidadesServices: UnidadesService,
+    public dialogRef: MatDialogRef<TransferenciasComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any[],
+  ) {} 
+
+  ngOnInit(): void {
+
+  }
+
+  maximizeDialog(){
+    this.dialogRef.addPanelClass('full-screen-modal');
+    this.dialogRef.updateSize('100vw','100vh');
+    this.maxSize = true;
+ 
+  }
+
+  minimizeDialog(){
+    this.dialogRef.updateSize('1000px');
+    this.maxSize = false;
+
+  }
+
+  closeDialog(){
+    this.dialogRef.close();
+  }
+
+}
+
+
 ///////////////////////TRASLADOS MASIVOS
 
 @Component({
@@ -571,8 +635,6 @@ export class TrasladosDialogComponent implements OnInit {
   templateUrl: '../masive-traslados/masive-traslados.component.html',
   styleUrls: ['../masive-traslados/masive-traslados.component.css']
 })
- 
-
 export class MasiveTrasladosComponent implements OnInit {
 
   ListLocalidadesCombo: any[] = [];
@@ -630,6 +692,14 @@ export class MasiveTrasladosComponent implements OnInit {
       else{
         unidadesModel.idLocalidadNueva = unidadesModel.strLocalidadNueva;
       }
+
+      alert(unidadesModel.idLocalidadNueva);
+
+      unidadesModel.gfxNuevo = '0';
+
+      unidadesModel.listlocalidades = [];
+
+      console.log(unidadesModel);
       
       this.unidadesServices.solicitaTraspaso(unidadesModel,tipoConsulta)
       .subscribe(complete =>{
@@ -638,5 +708,47 @@ export class MasiveTrasladosComponent implements OnInit {
     
   }
 }
+
+}
+
+///////////////////////PUBLICAR A LA RED
+@Component({
+  selector: 'app-publicar-red',
+  templateUrl: '../publicar-red/publicar-red.component.html',
+  styleUrls: ['../publicar-red/publicar-red.component.css']
+})
+export class PublicarRedComponent implements OnInit {
+
+  ListLocalidadesCombo: any[] = [];
+  nuevaLocalidad: any;
+  localidadRepetida: boolean = false;
+  errorLocalidad: boolean = false;
+  maxSize: boolean = false;
+
+  constructor(public unidadesServices: UnidadesService,
+    public dialogRef: MatDialogRef<PublicarRedComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any[],
+  ) {} 
+
+  ngOnInit(): void {
+
+  }
+
+  maximizeDialog(){
+    this.dialogRef.addPanelClass('full-screen-modal');
+    this.dialogRef.updateSize('100vw','100vh');
+    this.maxSize = true;
+ 
+  }
+
+  minimizeDialog(){
+    this.dialogRef.updateSize('1000px');
+    this.maxSize = false;
+
+  }
+
+  closeDialog(){
+    this.dialogRef.close();
+  }
 
 }
