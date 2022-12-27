@@ -12,11 +12,14 @@
   </div>
 
   <div class="row" style="width:100%; text-align:right" >
-
+    <div *ngIf="!minimoRequerido">
+      <label style="color: red; font-size: small;" >Para realizar la búsqueda se reguieren al menos 6 caracteres.</label>
+    </div>
     <div class="col-md-8">
       <form  #formActivationRequestSearch="ngForm">
         <mat-icon style="color:black;" class="material-icons color_white">search</mat-icon>
-       <input style="font-size:medium; width: 20%; border-style: solid; border-color: gainsboro;" placeholder="VIN"  (change)="openDialogListadoVIN (formActivationRequestSearch)" id="formBusquedaGral" name="formBusquedaGral" class="form-control"  [(ngModel)]="vinBus2">
+        
+       <input style="font-size:medium; width: 20%; border-style: solid; border-color: gainsboro;" placeholder="VIN" maxlength="17"  (change)="openDialogListadoVIN (formActivationRequestSearch)" id="formBusquedaGral" name="formBusquedaGral" class="form-control"  [(ngModel)]="vinBus2">
      </form>
      
       <!--<a style="color:orange;" mat-list-item routerLink="/home"> <mat-icon>home</mat-icon></a>

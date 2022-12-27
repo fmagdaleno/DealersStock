@@ -88,11 +88,12 @@ export class UnidadesService {
 
   ////modal
 
-  solicitaTraspaso(unidades:any,tipoConsulta:number){
-    const url_api_SolicitaReProceso= environment.hostUrl + '/vw_Unidades/SolicitaTraspaso/u01p024/' + tipoConsulta + '/' // + window['varGlobal_User'] + '/';
+  solicitaTraspaso(unidades:any,tipoConsulta:number, sucursalNueva:number,strVIN:string){
+    const url_api_SolicitaReProceso= environment.hostUrl + '/vw_Unidades/SolicitaTraspaso/u01p024/' + tipoConsulta + '/' + sucursalNueva + '/'
+    + strVIN + '/' // + window['varGlobal_User'] + '/';
     //alert(url_api_SolicitaReProceso);
     return this.http
-    .post<any[]>(url_api_SolicitaReProceso,unidades,{headers: this.headers})
+    .post<any[]>(url_api_SolicitaReProceso,{headers: this.headers})
     .pipe(map(data => data));
   }
 
@@ -104,6 +105,21 @@ export class UnidadesService {
   getDetalleVIN( strVIN:string){
     const url_api_Request = environment.hostUrl + '/vw_Unidades/GetDetalleVIN/' + strVIN + '/';
     return this.http.get<any>(url_api_Request); 
+  }
+
+  getVentasPoVIN( strBusqueda:string){
+    const url_api_Request = environment.hostUrl + '/vw_Unidades/GetVentasByVIN/' + strBusqueda + '/';
+    return this.http.get<any[]>(url_api_Request); 
+  }
+
+  getTraspasosPoVIN( strBusqueda:string){
+    const url_api_Request = environment.hostUrl + '/vw_Unidades/GetTraspasosByVIN/' + strBusqueda + '/';
+    return this.http.get<any[]>(url_api_Request); 
+  }
+
+  getPedidos( strBusqueda:string){
+    const url_api_Request = environment.hostUrl + '/vw_Unidades/GetPedidos/' + strBusqueda + '/';
+    return this.http.get<any[]>(url_api_Request); 
   }
 
 }

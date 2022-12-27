@@ -7,7 +7,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Console, groupCollapsed } from 'console';
 import * as XLSX from 'xlsx'; 
 import {MatDialog, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-//import {TrasladosDialogComponent} from '../traslados-dialog/traslados-dialog.component';
+import {DetalleUnidadDialogComponent} from '../navigation/header/header.component';
 
 
 export class Group {
@@ -407,8 +407,6 @@ handlePage(e: PageEvent, IdClasCorp:number){
 handlePageUnidadesVIN(e: PageEvent){
   this.page_sizeUni = e.pageSize;
   this.page_numberUni = e.pageIndex + 1;
-
-  
 }
 
 
@@ -450,6 +448,17 @@ else{
 }
 }
 
+openDetalleVIN(strVIN:string){
+  this.strVIN = strVIN;
+
+  //setTimeout(() => {
+    const dialogRefMasive = this.dialog.open(DetalleUnidadDialogComponent, {
+      width: '1000px',
+      data:this.strVIN , 
+    });
+  //},500)
+}
+
 
 
 /////EXCEL
@@ -457,8 +466,8 @@ else{
 ExportTOExcelUnidades() {  
   const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(this.tableUnit.nativeElement);  
   const wb: XLSX.WorkBook = XLSX.utils.book_new();  
-  XLSX.utils.book_append_sheet(wb, ws, 'Documentos cargados Histórico');  
-  XLSX.writeFile(wb, 'DocumentosCargadosHistorico.xlsx');  
+  XLSX.utils.book_append_sheet(wb, ws, 'Inventario');  
+  XLSX.writeFile(wb, 'Inventario.xlsx');  
 }
 
 enviarAPendientes(listUnidades: any[]){
@@ -535,6 +544,7 @@ export class TrasladosDialogComponent implements OnInit {
   nuevaLocalidad: any;
   localidadRepetida: boolean = false;
   errorLocalidad: boolean = false;
+  maxSize: boolean = false;
 
   constructor(public unidadesServices: UnidadesService,
     public dialogRef: MatDialogRef<TrasladosDialogComponent>,
@@ -573,12 +583,30 @@ export class TrasladosDialogComponent implements OnInit {
         unidadesModel.idLocalidadNueva = unidadesModel.strLocalidadNueva;
       }
       
-      this.unidadesServices.solicitaTraspaso(unidadesModel,tipoConsulta)
+      this.unidadesServices.solicitaTraspaso(unidadesModel,tipoConsulta,unidadesModel.idLocalidadNueva,unidadesModel.vin)
       .subscribe(complete =>{
+        //this.buscadatos(false);
         alert("Proceso terminado con exito");
     });
     
   }
+}
+
+maximizeDialog(){
+  this.dialogRef.addPanelClass('full-screen-modal');
+  this.dialogRef.updateSize('100vw','100vh');
+  this.maxSize = true;
+
+}
+
+minimizeDialog(){
+  this.dialogRef.updateSize('1000px');
+  this.maxSize = false;
+
+}
+
+closeDialog(){
+  this.dialogRef.close();
 }
 
 }
@@ -693,15 +721,15 @@ export class MasiveTrasladosComponent implements OnInit {
         unidadesModel.idLocalidadNueva = unidadesModel.strLocalidadNueva;
       }
 
-      alert(unidadesModel.idLocalidadNueva);
+      //alert(unidadesModel.idLocalidadNueva);
 
-      unidadesModel.gfxNuevo = '0';
+      //unidadesModel.gfxNuevo = '0';
 
-      unidadesModel.listlocalidades = [];
+      //unidadesModel.listlocalidades = [];
 
-      console.log(unidadesModel);
+      //console.log(unidadesModel);
       
-      this.unidadesServices.solicitaTraspaso(unidadesModel,tipoConsulta)
+      this.unidadesServices.solicitaTraspaso(unidadesModel,tipoConsulta,unidadesModel.idLocalidadNueva,unidadesModel.vin)
       .subscribe(complete =>{
         alert("Proceso terminado con exito");
     });

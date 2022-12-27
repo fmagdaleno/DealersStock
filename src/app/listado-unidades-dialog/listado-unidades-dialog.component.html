@@ -9,13 +9,48 @@
     </tr>
 </table>
 
-<h2 style="color:rgb(42, 42, 138);">Unidades Encontradas</h2>
+<table>
+<tr>
+    <td>
+      <button class="MyButton"  type="button" (click)="openDialogMasiveTraspasos(ListUnidades)"><mat-icon class="material-icons color_white">compare_arrows</mat-icon>Traspasar entre sucursales</button>
+      
+    </td>
+    <td>
+      <button  class="MyButton"  type="button" (click)="openDialogMasiveTransferencias(ListUnidades)"><mat-icon class="material-icons color_white">assignment</mat-icon>Registrar venta</button>
+    </td>
+    <td>
+      <button  class="MyButton"  type="button" (click)="openDialogMasiveTransferencias(ListUnidades)"><mat-icon class="material-icons color_white">redo</mat-icon>Transferir</button>
+    </td>
+    <td>
+      <button  class="MyButton"  type="button" (click)="openDialogPublicarRed(ListUnidades)"><mat-icon class="material-icons color_white">publish</mat-icon>Publicar a la red</button>
+    </td>
+    <td><mat-paginator style="font-size:x-small;"  [length]="ListUnidades.length" [pageSize]="20" 
+        (page)="handlePageUnidadesVIN($event)">
+      </mat-paginator>
+    </td>
+  </tr>
+</table>
+
+<table>
+    <tr>
+        <td>
+            <h2 style="color:rgb(42, 42, 138);">Unidades Encontradas-</h2>
+        </td>
+        <td>
+            <button   (click)="ExportTOExcelUnidades()" type="button" class="MyButton"  data-toggle="modal"><mat-icon class="material-icons" style="color:green;">calculate</mat-icon>Excel</button>
+          </td>
+    </tr>
+</table>
+
+
+
 <!--{{this.data | json}}-->
 <hr>
 <p></p>
 
 <table style="width:90%">
     <tr>
+        <td></td>
         <td>
             <label >VIN</label>
         </td>
@@ -26,12 +61,24 @@
             <label >Clasificación status</label>
         </td>
         <td>
+            <label >Pendientes de la unidad</label>
+        </td>
+        <td>
 
         </td>
         <td></td>
+
     </tr>
-    <tr *ngFor="let uni of ListUnidades">
+    <tr *ngFor="let uni of ListUnidades | pagination: page_sizeUni:page_numberUni">
         <td>
+            <mat-checkbox *ngIf="uni.intIdTraspaso == 0
+            && uni.idStatus ==1"
+            [checked]="uni.bitChecked" 
+            (change)="valueChange(uni,$event)">
+            </mat-checkbox>
+        </td>
+        <td>
+
             <label >{{uni.vin}}</label>
         </td>
         <td>
@@ -40,12 +87,72 @@
         <td>
             <label >{{uni.status}}</label>
         </td>
+        <td>
+            <button *ngIf="uni.intIdTraspaso > 0" style="font-size:x-small;" (click)="openDialogTraspasos(uni)"   type="button" ><mat-icon>compare_arrows</mat-icon></button>
+        </td>
 
         <td>
             <button  (click)="openDetalleVIN(uni.vin)"  type="button" ><mat-icon>list</mat-icon>Ver detalle</button>
             
         </td>
 
+
     </tr>
+
 </table>
 
+
+<div hidden="true" class="table-responsive" #tableUnit>
+    <table class="table">
+      <tr>
+        <th>VIN</th>
+        <th>Pedido</th>
+        <th>Modelo</th>
+        <th>Clase corporativa</th>
+        <th>Distribuidor</th>
+        <th>Sucursal</th>
+        <th>Motor</th>
+        <th>Fecha inventario</th>
+        <th>Días plan</th>
+        <th>Estatus</th>
+        <th>Antigüedad</th>
+        
+      </tr>
+      <tr *ngFor="let unidad of ListUnidades;">
+        <td>
+          {{unidad.vin}}
+        </td>
+        <td>
+          {{unidad.strPedido}}
+        </td>
+        <td>
+          {{unidad.modelo}}
+        </td>
+        <td>
+          {{unidad.claseCorporativa}}
+        </td>
+        <td>
+          {{unidad.strNombreDealer}}
+        </td>
+        <td>
+          {{unidad.strLocalidad}}
+        </td>
+        <td>
+          {{unidad.motor}}
+        </td>
+        <td>
+          {{unidad.fchInventario | date: 'fullDate'}}
+        </td>
+        <td>
+          {{unidad.diasPlan}}
+        </td >
+        <td>
+          {{unidad.status}}
+        </td>
+        <td>
+          {{unidad.intAntiguedad}} días
+        </td>    
+
+      </tr>
+    </table>
+  </div>

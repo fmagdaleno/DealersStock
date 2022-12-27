@@ -1,0 +1,61 @@
+
+.azul {
+    background-color:blue;
+    }
+    .verde {
+    background-color:green;
+    }
+  
+    button {
+      border: none;
+      outline: none;
+      background: none;
+      }
+  
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 10px 5px;
+        font-size: x-small;
+      }
+  
+      thead {
+        position: sticky;
+        top: 0;
+        background-color:white;
+        z-index: 1;
+        color:rgb(51, 51, 170);
+        text-align: left;
+    }
+    .contenedor{
+      height: 100%;
+      width: 100%;
+     
+      margin: 1% 1%;
+      vertical-align: top;
+    }
+  
+    .cabecera{
+      height: 30px;
+      width: 95%;
+     text-align:right;
+      margin: 2% 2% 2% 2%;
+    }
+  
+    .MyButton {
+      color: black;
+      font-size: x-small;
+      }
+  
+      .mat-icon {
+        vertical-align: middle;
+    }
+  
+    .example-container {
+  
+      height: 50%;
+      margin: 10px;
+  
+    }
+    
+  

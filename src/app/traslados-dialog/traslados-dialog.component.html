@@ -1,4 +1,14 @@
-<h2 *ngIf="data.unidadesModel.intIdTraspaso == 0" style="color:rgb(42, 42, 138);">Solicitar traspaso de unidad</h2>
+
+<table style="width: 100%;">
+    <tr>
+        <td style="text-align: right;">
+            <mat-icon *ngIf="!maxSize" (click)="maximizeDialog()">unfold_more</mat-icon>
+            <mat-icon *ngIf="maxSize" (click)="minimizeDialog()">unfold_less</mat-icon>
+            <mat-icon  (click)="closeDialog()">clear</mat-icon>
+        </td>
+    </tr>
+</table>
+<h2 *ngIf="data.unidadesModel.intIdTraspaso == 0" style="color:rgb(42, 42, 138);">Traspaso de unidades</h2>
 <h2 *ngIf="data.unidadesModel.intIdTraspaso > 0" style="color:rgb(42, 42, 138);">Aceptar / Rechazar traspaso de unidad</h2>
 <h4 style="color:rgba(31, 31, 167, 0.227);"> Unidad: {{data.unidadesModel.vin}} - {{data.unidadesModel.modelo}}</h4>
 <hr>
@@ -36,7 +46,7 @@
                   <mat-option 
                   *ngFor="let localidad of ListLocalidadesCombo" 
                   [value]="localidad.idlocalidad">
-                  {{localidad.idlocalidad}}
+                  {{localidad.strNombreLocalidad}}
                 </mat-option>
 
                 </mat-select>

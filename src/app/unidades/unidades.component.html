@@ -103,7 +103,7 @@
                           <mat-option 
                           *ngFor="let distribubidor of ListDistribuidoresCombo" 
                           [value]="distribubidor.gfx">
-                          {{distribubidor.gfx}}
+                          {{distribubidor.strNombreDealer}}
                         </mat-option>
   
                         </mat-select>
@@ -119,7 +119,7 @@
                           <mat-option 
                           *ngFor="let localidad of ListLocalidadesCombo" 
                           [value]="localidad.idlocalidad">
-                          {{localidad.idlocalidad}}
+                          {{localidad.strNombreLocalidad}}
                         </mat-option>
   
                         </mat-select>
@@ -147,11 +147,6 @@
                       <!--<p>{{selectedObjects | json}}</p>-->
                     </td>
   
-                    <td><mat-paginator style="font-size:x-small;" *ngIf="intTipoBusqueda == 1" [length]="ListUnidades.length" [pageSize]="20" 
-                      (page)="handlePageUnidadesVIN($event)">
-                    </mat-paginator>
-                  </td>
-  
                   </tr>
                   <tr>
                     <td>
@@ -167,6 +162,10 @@
                     <td>
                       <button  class="MyButton"  type="button" (click)="openDialogPublicarRed(ListUnidades)"><mat-icon class="material-icons color_white">publish</mat-icon>Publicar a la red</button>
                     </td>
+                    <td><mat-paginator style="font-size:x-small;" *ngIf="intTipoBusqueda == 1" [length]="ListUnidades.length" [pageSize]="20" 
+                      (page)="handlePageUnidadesVIN($event)">
+                    </mat-paginator>
+                  </td>
                   </tr>
                 </table>
                 <!--busqueda por Clase y Modelo--> 
@@ -237,9 +236,7 @@
                                     <td *ngIf="col7">Días plan</td>
                                     <td *ngIf="col8">Estatus</td>
                                     <td *ngIf="col9">Antigüedad</td>
-                                    <td>Traspasar</td>
-                                    <td>Traspaso pendiente</td>
-                                    <td>Unidad con pendientes</td>
+                                    <td>Acción pendiente</td>
                                   </tr>
                                   <tbody  *ngFor="let unidad of ListUnidades
                                                   let indice=index;">
@@ -248,11 +245,11 @@
                                     && unidad.idClasCorp == clasesCorpo.idClasCorp">
                                       <!--<th scope="row">{{ i + 1 }}</th>-->
                                       <td *ngIf="col1">
-                                        <mat-checkbox *ngIf="unidad.intUnidadPendiente == 0"
+                                        <mat-checkbox *ngIf="unidad.intIdTraspaso == 0"
                                         [checked]="unidad.bitChecked" 
                                         (change)="valueChange(unidad,$event)">
                                         </mat-checkbox>
-                                        {{unidad.vin}} 
+                                        <label (click)="openDetalleVIN(unidad.vin)" style="color: blue;">{{unidad.vin}}</label>
                                       </td>
                                       <td *ngIf="col11">
                                         {{unidad.strPedido}}
@@ -278,14 +275,8 @@
                                   <td *ngIf="col9">
                                     {{unidad.intAntiguedad}} días
                                 </td>
-                                <td>
-                                  <button *ngIf="unidad.intIdTraspaso == 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)"   type="button" ><mat-icon>compare_arrows</mat-icon></button>
-                              </td>
-                              <td>
-                                <button *ngIf="unidad.intIdTraspaso > 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)"   type="button" ><mat-icon>query_builder</mat-icon></button>
-                            </td>
-                            <td *ngIf="unidad.intUnidadPendiente > 0">
-                              <mat-icon>assignment</mat-icon>
+                            <td>
+                              <button *ngIf="unidad.intIdTraspaso > 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)" title="Traspaso entre sucursales"   type="button" ><mat-icon>compare_arrows</mat-icon></button>
                           </td>
                                     </tr>                               
                                   </tbody>
@@ -382,9 +373,7 @@
                                                       <td *ngIf="col7">Días plan</td>
                                                       <td *ngIf="col8">Estatus</td>
                                                       <td *ngIf="col9">Antigüedad</td>
-                                                      <td>Traspasar</td>
-                                                      <td>Traspaso pendiente</td>
-                                                      <td>Unidad con pendientes</td>
+                                                      <td>Acción pendiente</td>
                                                     </tr>
                                                     <tbody  *ngFor="let unidad of ListUnidades
                                                                     let indice=index;">
@@ -394,11 +383,11 @@
                                                       && unidad.idAntiguedad == idAntiguedad">
                                                         <!--<th scope="row">{{ i + 1 }}</th>--> 
                                                         <td *ngIf="col1">
-                                                          <mat-checkbox *ngIf="unidad.intUnidadPendiente == 0"
+                                                          <mat-checkbox *ngIf="unidad.intIdTraspaso == 0"
                                                           [checked]="unidad.bitChecked" 
                                                           (change)="valueChange(unidad,$event)">
                                                           </mat-checkbox>
-                                                          {{unidad.vin}} 
+                                                          <label (click)="openDetalleVIN(unidad.vin)" style="color: blue;">{{unidad.vin}}</label>
                                                         </td>
                                                         <td *ngIf="col11">
                                                           {{unidad.strPedido}}
@@ -424,14 +413,8 @@
                                                     <td *ngIf="col9">
                                                       {{unidad.intAntiguedad}} días
                                                   </td>
-                                                  <td>
-                                                    <button *ngIf="unidad.intIdTraspaso == 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)"   type="button" ><mat-icon>compare_arrows</mat-icon></button>
-                                                </td>
-                                                <td>
-                                                  <button *ngIf="unidad.intIdTraspaso > 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)"   type="button" ><mat-icon>query_builder</mat-icon></button>
-                                              </td>
-                                              <td *ngIf="unidad.intUnidadPendiente > 0">
-                                                <mat-icon>assignment</mat-icon>
+                                              <td>
+                                                <button *ngIf="unidad.intIdTraspaso > 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)" title="Traspaso entre sucursales"   type="button" ><mat-icon>compare_arrows</mat-icon></button>
                                             </td>
                                                       </tr>                               
                                                     </tbody>
@@ -538,9 +521,7 @@
                       <th scope="col" *ngIf="col7">Días plan</th>
                       <th scope="col" *ngIf="col8">Estatus</th>
                       <th scope="col" *ngIf="col9">Antigüedad</th>
-                      <th scope="col">Traspasar</th>
-                      <th scope="col">Traspaso pendiente</th>
-                      <th scope="col">Unidad con pendientes</th>
+                      <th scope="col">Acción pendiente</th>
                       
                     </tr>
                   </thead>
@@ -548,11 +529,11 @@
                     <tr >
                       <!--<th scope="row">{{ i + 1 }}</th>-->
                       <td *ngIf="col1">
-                        <mat-checkbox *ngIf="unidad.intUnidadPendiente == 0"
+                        <mat-checkbox *ngIf="unidad.intIdTraspaso == 0"
                         [checked]="unidad.bitChecked" 
                         (change)="valueChange(unidad,$event)">
                         </mat-checkbox> 
-                        {{unidad.vin}}
+                        <label (click)="openDetalleVIN(unidad.vin)" style="color: blue;">{{unidad.vin}}</label>
                       </td>
                       <td *ngIf="col11">
                         {{unidad.strPedido}}
@@ -584,14 +565,8 @@
                       <td  *ngIf="col9">
                         {{unidad.intAntiguedad}} días
                       </td>
-                      <td>
-                        <button *ngIf="unidad.intIdTraspaso == 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)"   type="button" ><mat-icon>compare_arrows</mat-icon></button>
-                    </td>
-                    <td>
-                      <button *ngIf="unidad.intIdTraspaso > 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)"   type="button" ><mat-icon>query_builder</mat-icon></button>
-                  </td>
-                  <td *ngIf="unidad.intUnidadPendiente > 0">
-                    <mat-icon>assignment</mat-icon>
+                  <td>
+                    <button *ngIf="unidad.intIdTraspaso > 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)" title="Traspaso entre sucursales"  type="button" ><mat-icon>compare_arrows</mat-icon></button>
                 </td>
                     </tr>
                     <tr>

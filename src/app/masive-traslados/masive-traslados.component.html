@@ -8,12 +8,12 @@
     </tr>
 </table>
 
-<h2 style="color:rgb(42, 42, 138);">Solicitar traspaso de unidades</h2>
+<h2 style="color:rgb(42, 42, 138);">Traspaso de unidades</h2>
 <!--{{this.data | json}}-->
 <hr>
 <p></p>
 <label *ngIf="errorLocalidad" style="color:red">Seleccione la sucursal destino.</label>
-<label *ngIf="localidadRepetida" style="color:red">Nu puede traspasar la unidad a la misma sucursal.</label>
+<label *ngIf="localidadRepetida" style="color:red">No puede traspasar la unidad a la misma sucursal.</label>
 <p *ngIf="localidadRepetida || errorLocalidad"></p>
 <table style="width:90%">
     <tr>
@@ -51,7 +51,7 @@
                   <mat-option 
                   *ngFor="let localidad of uni.listlocalidades" 
                   [value]="localidad.idlocalidad">
-                  {{localidad.idlocalidad}}
+                  {{localidad.strNombreLocalidad}}
                 </mat-option>
 
                 </mat-select>

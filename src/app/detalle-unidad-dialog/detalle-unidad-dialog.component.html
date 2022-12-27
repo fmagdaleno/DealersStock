@@ -1,4 +1,4 @@
-{{this.DetalleUnidad | json}}
+<!--{{this.DetalleUnidad  | json}}-->
 
 <table style="width: 100%;">
     <tr>
@@ -10,21 +10,67 @@
     </tr>
 </table>
 
-<h2 style="color:rgb(42, 42, 138);">Detalle de unidad {{this.DetalleUnidad.vin}} - {{this.DetalleUnidad.modelo}} </h2>
+<h2 style="color:rgb(42, 42, 138);">Detalle de unidad {{this.DetalleUnidad.vin}}</h2>
 <!--{{this.data | json}}-->
 <hr>
 <p></p>
-
-<!--<table style="width:90%">
+<table style="width: 100%;">
     <tr>
         <td>
-            <label >VIN</label>
+            Modelo:
+            <label style="color: rgba(0, 94, 255, 0.679);">{{this.DetalleUnidad.modelo}}</label>
         </td>
         <td>
-            <label >Distribuidor</label>
+            Año:
+            <label style="color: rgba(0, 94, 255, 0.679);">{{this.DetalleUnidad.status}}</label>
         </td>
         <td>
-            <label >Sucursal</label>
+            Motor:
+            <label style="color: rgba(0, 94, 255, 0.679);">{{this.DetalleUnidad.motor}}</label>
+        </td>
+        <td>
+            Segmento:
+            <label style="color: rgba(0, 94, 255, 0.679);">{{this.DetalleUnidad.segmento}}</label>
+        </td>
+
+        <td>
+            Distribuidor:
+            <label style="color: rgba(0, 94, 255, 0.679);">{{this.DetalleUnidad.strNombreDealer}}</label>
+        </td>
+        <td>
+            Estatus:
+            <label style="color: rgba(0, 94, 255, 0.679);"> {{this.DetalleUnidad.status}} </label>
+        </td>
+    </tr>
+</table>
+
+<h2 style="color:rgb(42, 42, 138);">Pedido</h2>
+<hr>
+<table style="width:90%">
+    <tr>
+        <td>
+            <label >Orden</label>
+        </td>
+        <td>
+            <label >Cliente</label>
+        </td>
+        <td>
+            <label >Contacto</label>
+        </td>
+        <td>
+            <label >Job</label>
+        </td>
+        <td>
+            <label >Fecha Producción</label>
+        </td>
+        <td>
+            <label >Paso</label>
+        </td>
+        <td>
+            <label >Fecha paso</label>
+        </td>
+        <td>
+            <label >Fecha orden</label>
         </td>
 
         <td>
@@ -32,21 +78,128 @@
         </td>
         <td></td>
     </tr>
-    <tr *ngFor="let uni of data">
+    <tr *ngFor="let ped of Pedidos" style="color: rgba(0, 94, 255, 0.679);">
         <td>
-            <label >{{uni.vin}}</label>
+            <label >{{ped.cD_ORDEN}}</label>
         </td>
         <td>
-            <label >{{uni.strNombreDealer}}</label>
+            <label >{{ped.nB_CLIENTE}}</label>
         </td>
         <td>
-            <label >{{uni.strLocalidad}}</label>
+            <label >{{ped.tX_CONTACTO}}</label>
+        </td>
+        <td>
+            <label >{{ped.cD_JOB}}</label>
+        </td>
+        <td>
+            <label >{{ped.fH_PRODUCCION | date: 'fullDate'}}</label>
+        </td>
+        <td>
+            <label >{{ped.cD_PASO}}</label>
+        </td>
+        <td>
+            <label >{{ped.fH_PASO | date: 'fullDate'}}</label>
+        </td>
+        <td>
+            <label >{{ped.fH_ORDEN | date: 'fullDate'}}</label>
+        </td>
+
+
+    </tr>
+</table>
+
+<h2 style="color:rgb(42, 42, 138);">Traspasos</h2>
+<hr>
+<table style="width:90%">
+    <tr>
+        <td>
+            <label >Fecha traspaso</label>
+        </td>
+        <td>
+            <label >Localidad anterior</label>
+        </td>
+        <td>
+            <label >Localidad nueva</label>
+        </td>
+        <td>
+            <label >Estatus</label>
+        </td>
+        <td>
+            <label >Fecha cambio estatus</label>
         </td>
 
         <td>
-            <button *ngIf="uni.intIdTraspaso == 0"    type="button" ><mat-icon>check</mat-icon>Solicitar</button>
-            
+
+        </td>
+        <td></td>
+    </tr>
+    <tr *ngFor="let ven of TraspasosUnidad" style="color: rgba(0, 94, 255, 0.679);">
+        <td>
+            <label >{{ven.fecha_Traspaso | date: 'fullDate'}}</label>
+        </td>
+        <td>
+            <label >{{ven.strLocalidadAterior}}</label>
+        </td>
+        <td>
+            <label >{{ven.strLocalidadNueva}}</label>
+        </td>
+        <td>
+            <label >{{ven.strEstatus}}</label>
+        </td>
+        <td>
+            <label >{{ven.fecha_status | date: 'fullDate'}}</label>
         </td>
 
     </tr>
-</table>-->
+</table>
+
+<h2 style="color:rgb(42, 42, 138);">Ventas</h2>
+<hr>
+<table style="width:90%">
+    <tr>
+        <td>
+            <label >Fecha venta</label>
+        </td>
+        <td>
+            <label >Plaza</label>
+        </td>
+        <td>
+            <label >Cliente final</label>
+        </td>
+        <td>
+            <label >UUID</label>
+        </td>
+        <td>
+            <label >Aplicación</label>
+        </td>
+        <td>
+            <label >Cancelaciones</label>
+        </td>
+
+        <td>
+
+        </td>
+        <td></td>
+    </tr>
+    <tr *ngFor="let ven of VentasUnidad" style="color: rgba(0, 94, 255, 0.679);">
+        <td>
+            <label >{{ven.fchDeVenta | date: 'fullDate'}}</label>
+        </td>
+        <td>
+            <label >{{ven.strPlaza}}</label>
+        </td>
+        <td>
+            <label >{{ven.clienteFinal}}</label>
+        </td>
+        <td>
+            <label >{{ven.uID}}</label>
+        </td> 
+        <td>
+            <label >{{ven.strAplicacion}}</label>
+        </td>
+        <td>
+            <label >{{ven.intNumCancelaciones}}</label>
+        </td>
+
+    </tr>
+</table>
