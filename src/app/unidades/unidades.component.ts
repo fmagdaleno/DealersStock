@@ -8,6 +8,7 @@ import { Console, groupCollapsed } from 'console';
 import * as XLSX from 'xlsx'; 
 import {MatDialog, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {DetalleUnidadDialogComponent} from '../navigation/header/header.component';
+import { StringifyOptions } from 'querystring';
 
 
 export class Group {
@@ -296,7 +297,7 @@ buscaPorDistribuidor(e: Event){
     this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda,this.GFX,this.localidad,this.stridClasCorpo,false);
 
     this.unidadesServices
-    .getLocalidadesCombo(e)
+    .getLocalidadesCombo(this.GFX)
     .subscribe((_ListLocalidadesCombo:any[]) => {
       this.ListLocalidadesCombo = _ListLocalidadesCombo
       });
@@ -311,7 +312,8 @@ buscaPorDistribuidor(e: Event){
   }
 
   getLocalidades(e: Event){
-
+  //alert(e);
+  //alert(this.GFX);
     this.localidad = e;
 
     this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda,this.GFX,this.localidad,this.stridClasCorpo,false);
@@ -479,6 +481,17 @@ enviarAPendientes(listUnidades: any[]){
 
 
 ///////////////////////////////////////////////////////////////////////////////////////modales
+
+/////////Registrar venta
+openRegistrarVenta(unidadesVenta: any[]): void {
+  this.ListUnidadesDialog = unidadesVenta.filter(uni => uni.bitChecked);
+
+  const dialogRefMasive = this.dialog.open(RegistrarVentaDialogComponent, {
+    width: '1000px',
+    data:this.ListUnidadesDialog , 
+  });
+  //console.log(this.ListUnidadesDialog);
+}
 
 /////////Publicar a la red
 openDialogPublicarRed(unidadesTraspaso: any[]): void {
@@ -779,4 +792,71 @@ export class PublicarRedComponent implements OnInit {
     this.dialogRef.close();
   }
 
+}
+
+///////////////////////REGISTRAR VENTA
+@Component({
+  selector: 'app-registrar-venta-dialog',
+  templateUrl: '../registrar-venta-dialog/registrar-venta-dialog.component.html',
+  styleUrls: ['../registrar-venta-dialog/registrar-venta-dialog.component.css']
+})
+export class RegistrarVentaDialogComponent implements OnInit {
+
+  ListLocalidadesCombo: any[] = [];
+  ListRegistrosPendientes: any[] = [];
+  nuevaLocalidad: any;
+  localidadRepetida: boolean = false;
+  errorLocalidad: boolean = false;
+  maxSize: boolean = false;
+
+  constructor(public unidadesServices: UnidadesService,
+    public dialogRef: MatDialogRef<RegistrarVentaDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any[],
+  ) {} 
+
+  ngOnInit(): void {
+    this.buscaPendientes();
+  }
+
+  maximizeDialog(){
+    this.dialogRef.addPanelClass('full-screen-modal');
+    this.dialogRef.updateSize('100vw','100vh');
+    this.maxSize = true;
+ 
+  }
+
+  minimizeDialog(){
+    this.dialogRef.updateSize('1000px');
+    this.maxSize = false;
+
+  }
+
+  closeDialog(){
+    this.dialogRef.close();
+  }
+  
+
+  insertaPendientes(strVIN: string){
+    this.unidadesServices.insertaPendientes(strVIN)
+    .subscribe(complete =>{
+      alert("Unidades enviadas a pendiente de registro de ventas");
+      this.buscaPendientes();
+  });   
+  }
+
+  buscaPendientes(){
+  this.unidadesServices
+  .getPendientesRegistroVenta()
+  .subscribe((_Clases:any[]) => {
+    this.ListRegistrosPendientes = _Clases 
+    });
+  }
+
+  eliminaRegistroVenta(strVIN: string){
+    this.unidadesServices.eliminaRegistro(strVIN)
+    .subscribe(complete =>{
+      alert("Registro pendiente de venta eliminado");
+      this.buscaPendientes();
+  });   
+  }
 }

@@ -1,3 +1,4 @@
+<div>
 <table style="width: 100%;">
     <tr>
         <td style="text-align: right;">
@@ -8,7 +9,7 @@
     </tr>
 </table>
 
-<h2 style="color:rgb(42, 42, 138);">Transferir unidades</h2>
+<h2 style="color:rgb(42, 42, 138);">Registrar venta</h2>
 <!--{{this.data | json}}-->
 <hr>
 <p></p>
@@ -42,9 +43,33 @@
         </td>
 
         <td>
-            <button *ngIf="uni.intIdTraspaso == 0"    type="button" ><mat-icon>check</mat-icon>Transferir</button>
-            
+            <button *ngIf="uni.intIdTraspaso == 0" (click)="insertaPendientes(uni.vin)"   type="button" ><mat-icon>check</mat-icon>Enviar a registro</button>
         </td>
 
     </tr>
 </table>
+
+<h2 style="color:rgb(42, 42, 138);">Pendientes de registro de venta</h2>
+<!--{{this.data | json}}-->
+<hr>
+<p></p>
+
+<table style="width:90%">
+    <tr>
+        <td>
+            <label >VIN</label>
+        </td>
+        <td>
+            <label >Cancelar registro</label>
+        </td>
+    </tr>
+    <tr *ngFor="let uni of ListRegistrosPendientes">
+        <td>
+            <label >{{uni.vin}}</label>
+        </td>
+        <td>
+            <button  style="font-size:x-small;"  title="Cancelar registro" (click)="eliminaRegistroVenta(uni.vin)"   type="button" ><mat-icon>delete</mat-icon></button>
+        </td>
+    </tr>
+</table>
+</div>

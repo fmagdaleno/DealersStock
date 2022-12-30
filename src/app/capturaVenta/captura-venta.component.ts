@@ -366,7 +366,7 @@ export class CapturaVentaComponent implements OnInit {
         cte.nu_telefonoMovil= this.telmovFrmCtl.value;
         cte.tx_email = this.emailFormControl.value;
         cte.id_TipoCliente = this.selectedTipcl;
-        cte.nu_cp=this.cpFormControl.value;
+        cte.nu_cp=this.cpFormControl.value.toString();
         cte.id_estado= Number(this.selectededo);
         cte.id_asentamiento = Number(this.selectedLoc);
         cte.tx_direccion = this.domFormControl.value;

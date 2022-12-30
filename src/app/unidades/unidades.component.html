@@ -115,7 +115,7 @@
                       <mat-form-field appearance="fill">
                         <mat-label>Sucursales</mat-label>
                         <mat-select  
-                          (selectionChange)="getLocalidadesByDistribuidor($event.value)" >
+                          (selectionChange)="getLocalidades($event.value)" >
                           <mat-option 
                           *ngFor="let localidad of ListLocalidadesCombo" 
                           [value]="localidad.idlocalidad">
@@ -154,7 +154,7 @@
                       
                     </td>
                     <td>
-                      <button  class="MyButton"  type="button" (click)="enviarAPendientes(ListUnidades)"><mat-icon class="material-icons color_white">assignment</mat-icon>Registrar venta</button>
+                      <button  class="MyButton"  type="button" (click)="openRegistrarVenta(ListUnidades)"><mat-icon class="material-icons color_white">assignment</mat-icon>Registrar venta</button>
                     </td>
                     <td>
                       <button  class="MyButton"  type="button" (click)="openDialogMasiveTransferencias(ListUnidades)"><mat-icon class="material-icons color_white">redo</mat-icon>Transferir</button>
@@ -169,7 +169,7 @@
                   </tr>
                 </table>
                 <!--busqueda por Clase y Modelo--> 
-                <table  *ngIf="intTipoBusqueda == 2">
+                <table  *ngIf="intTipoBusqueda == 2"> 
                   <thead >
                     <tr>
             
@@ -245,7 +245,8 @@
                                     && unidad.idClasCorp == clasesCorpo.idClasCorp">
                                       <!--<th scope="row">{{ i + 1 }}</th>-->
                                       <td *ngIf="col1">
-                                        <mat-checkbox *ngIf="unidad.intIdTraspaso == 0"
+                                        <mat-checkbox *ngIf="unidad.intIdTraspaso == 0
+                                                            && unidad.bitTieneRegistroPendiente ==0"
                                         [checked]="unidad.bitChecked" 
                                         (change)="valueChange(unidad,$event)">
                                         </mat-checkbox>
@@ -277,6 +278,7 @@
                                 </td>
                             <td>
                               <button *ngIf="unidad.intIdTraspaso > 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)" title="Traspaso entre sucursales"   type="button" ><mat-icon>compare_arrows</mat-icon></button>
+                              <button *ngIf="unidad.bitTieneRegistroPendiente > 0" style="font-size:x-small;"  title="Registro de venta"   type="button" ><mat-icon>assignment</mat-icon></button>
                           </td>
                                     </tr>                               
                                   </tbody>
@@ -383,7 +385,8 @@
                                                       && unidad.idAntiguedad == idAntiguedad">
                                                         <!--<th scope="row">{{ i + 1 }}</th>--> 
                                                         <td *ngIf="col1">
-                                                          <mat-checkbox *ngIf="unidad.intIdTraspaso == 0"
+                                                          <mat-checkbox *ngIf="unidad.intIdTraspaso == 0
+                                                          && unidad.bitTieneRegistroPendiente ==0"
                                                           [checked]="unidad.bitChecked" 
                                                           (change)="valueChange(unidad,$event)">
                                                           </mat-checkbox>
@@ -415,7 +418,8 @@
                                                   </td>
                                               <td>
                                                 <button *ngIf="unidad.intIdTraspaso > 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)" title="Traspaso entre sucursales"   type="button" ><mat-icon>compare_arrows</mat-icon></button>
-                                            </td>
+                                                <button *ngIf="unidad.bitTieneRegistroPendiente > 0" style="font-size:x-small;"  title="Registro de venta"   type="button" ><mat-icon>assignment</mat-icon></button>
+                                              </td>
                                                       </tr>                               
                                                     </tbody>
                                                   </table>
@@ -529,7 +533,8 @@
                     <tr >
                       <!--<th scope="row">{{ i + 1 }}</th>-->
                       <td *ngIf="col1">
-                        <mat-checkbox *ngIf="unidad.intIdTraspaso == 0"
+                        <mat-checkbox *ngIf="unidad.intIdTraspaso == 0
+                        && unidad.bitTieneRegistroPendiente ==0"
                         [checked]="unidad.bitChecked" 
                         (change)="valueChange(unidad,$event)">
                         </mat-checkbox> 
@@ -567,7 +572,8 @@
                       </td>
                   <td>
                     <button *ngIf="unidad.intIdTraspaso > 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)" title="Traspaso entre sucursales"  type="button" ><mat-icon>compare_arrows</mat-icon></button>
-                </td>
+                    <button *ngIf="unidad.bitTieneRegistroPendiente > 0" style="font-size:x-small;"  title="Registro de venta"   type="button" ><mat-icon>assignment</mat-icon></button>
+                  </td>
                     </tr>
                     <tr>
                       <td>

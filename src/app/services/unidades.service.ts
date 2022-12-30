@@ -122,4 +122,25 @@ export class UnidadesService {
     return this.http.get<any[]>(url_api_Request); 
   }
 
+  insertaPendientes(strVIN:string){
+    const url_api_SolicitaReProceso= environment.hostUrl + '/vw_Unidades/InsertarPendientes/' + strVIN + '/' // + window['varGlobal_User'] + '/';
+    //alert(url_api_SolicitaReProceso);
+    return this.http
+    .post<any[]>(url_api_SolicitaReProceso,{headers: this.headers})
+    .pipe(map(data => data));
+  }
+
+  getPendientesRegistroVenta(){
+    const url_api_Request_Clases = environment.hostUrl + '/vw_Unidades/GetPendientesRegistroVenta/';
+    return this.http.get<any[]>(url_api_Request_Clases); 
+  }
+
+  eliminaRegistro(strVIN:string){
+    const url_api_SolicitaReProceso= environment.hostUrl + '/vw_Unidades/EliminaRegistro/' + strVIN + '/' // + window['varGlobal_User'] + '/';
+    //alert(url_api_SolicitaReProceso);
+    return this.http
+    .post<any[]>(url_api_SolicitaReProceso,{headers: this.headers})
+    .pipe(map(data => data));
+  }
+
 }
