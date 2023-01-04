@@ -7,7 +7,9 @@
               <h1 mat-dialog-title>Carga de XML</h1>
               <div mat-dialog-content>
                 <form>
-                    <input id="file1" type="file" ng2FileSelect [uploader]="uploader" multiple />
+                  <button mat-stroked-button color="primary" (click)="file.click()">
+                    <mat-icon>cloud_upload</mat-icon> Seleccionar Archivos</button>
+                    <input id="file1" #file type="file" ng2FileSelect [uploader]="uploader" accept=".xml" hidden multiple />
                     <table class="table">
                     <thead>
                       <tr>
@@ -43,15 +45,17 @@
             <td style="vertical-align:top; width: 100%;">
               <div mat-dialog-actions>
                 <button mat-raised-button color="primary" (click)="uploadFile(uploader.queue)" [disabled]="!uploader.getNotUploadedItems().length">
-                   Leer Todos
+                   Leer
                 </button>
                 <button mat-raised-button color="warn"  (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
-                    Quitar Todos
+                    Quitar
                 </button>
               </div>              
             </td>
-            <td style="vertical-align:top;">
-              <button mat-button (click)="onNoClick()">Cerrar</button>  
+            <td style="vertical-align:top;" NOWRAP>
+              <mat-icon *ngIf="!maxSize" (click)="maximizeDialog()">unfold_more</mat-icon>
+              <mat-icon *ngIf="maxSize" (click)="minimizeDialog()">unfold_less</mat-icon>
+              <mat-icon (click)="onNoClick()">clear</mat-icon>
             </td>
           </tr>
         </table>
@@ -59,21 +63,23 @@
       </tr>
       <tr>
         <td style="vertical-align:top; width: 100%;">
-          <h1 mat-dialog-title style="width: 100%;">Selección de VIN</h1>
+          <!--<h1 mat-dialog-title style="width: 100%;">Selección de VIN</h1>-->
+          <h2 style="color:rgb(42, 42, 138);">Selección de VIN</h2>
+          <hr>
           <table class="table" style="width: 100%;">
             <thead>
               <tr>
-                <th>serie</th>
-                <th>rfcEmisor</th>
-                <th>nombreEmisor</th>
-                <th>rfcReceptor</th>
-                <th>nombreReceptor</th>
-                <th>descripcion</th>
-                <th>vin</th>
-                <th>uuid</th>
-                <th>moneda</th>
-                <th>total</th>
-                <th>fecha</th>
+                <!--<th>serie</th>-->
+                <th>RfcEmisor</th>
+                <th>NombreEmisor</th>
+                <th>RfcReceptor</th>
+                <th>NombreReceptor</th>
+                <th>Descripción</th>
+                <th>VIN</th>
+                <th>UUID</th>
+                <th>Moneda</th>
+                <th>Total</th>
+                <th>Fecha</th>
                 <th>Pedido</th>
                 <th>Modelo</th>
                 <th>ClasCorp</th>
@@ -82,7 +88,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let item of factXml">
-                <td>{{ item.serie }}</td>
+                <!--<td>{{ item.serie }}</td>-->
                 <td>{{ item.rfcEmisor }}</td>
                 <td>{{ item.nombreEmisor }}</td>
                 <td>{{ item.rfcReceptor }}</td>
@@ -92,7 +98,7 @@
                 <td>{{ item.uuid }}</td>
                 <td>{{ item.moneda }}</td>          
                 <td>{{ item.total | currency  }}</td>
-                <td>{{ item.fecha }}</td>
+                <td>{{ item.fecha2 }}</td>
                 <td>{{ item.cD_PEDIDO }}</td>
                 <td>{{ item.nB_MODELO }}</td>
                 <td>{{ item.nB_CLASIFCORP }}</td>

@@ -19,6 +19,7 @@ export class Xml {
   serie: string = '';
   folio: string = '';
   fecha: string = '';
+  fecha2: string = '';
   rfcEmisor: string = '';
   nombreEmisor: string = '';
   rfcReceptor: string = '';
@@ -140,7 +141,7 @@ export class CapturaVentaComponent implements OnInit {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
-      width: '1350px', height: '650px',
+      width: '1750px', height: '650px',
       data: {}
     });
 

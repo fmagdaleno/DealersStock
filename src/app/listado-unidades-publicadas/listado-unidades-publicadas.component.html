@@ -1,0 +1,119 @@
+<mat-drawer-container class="example-container">
+    <mat-drawer style="width: 15%; background-color: rgb(234, 233, 233);" mode="side" opened> Listado Unidades Publicadas</mat-drawer>
+    <hr>
+    <mat-drawer-content>
+        <table style="overflow:hidden;">
+            <tr>
+              <td style="width:85%">
+                <div class="table">
+                  <div class="container-fluid"  style="overflow-y:scroll;">
+                    <table>
+                        <tr>
+                          
+                        </tr>
+                        <tr>
+                          <td>
+                            <mat-form-field appearance="fill">
+                              <mat-label>Segmento</mat-label>
+                              <mat-select (selectionChange)="cambiaSegmento()" [(value)]="selectedClasCorp">
+                                <mat-option *ngFor="let clasCorpo of ListClasCorpoCombo" [value]="clasCorpo.idClasCorp">
+                                    {{clasCorpo.nombre}}
+                              </mat-option>        
+                              </mat-select>
+                            </mat-form-field>
+                          </td>                          
+                          <td>
+                            <mat-form-field appearance="fill">
+                              <mat-label>Modelo</mat-label>
+                              <mat-select (selectionChange)="cambiarModelo()" [(value)]="selectedModPub">
+                                <mat-option *ngFor="let modelop of ListModeloPub" [value]="modelop.modelo">
+                                    {{modelop.modelo}}
+                              </mat-option>        
+                              </mat-select>
+                            </mat-form-field>
+                          </td>                   
+                          <td>
+                            <mat-form-field appearance="fill">
+                              <mat-label>Año</mat-label>
+                              <mat-select (selectionChange)="CambiarAnio()" [(value)]="selectedAnioPub">
+                                <mat-option *ngFor="let anios of ListAnios" [value]="anios.cd_aniomodelo">
+                                    {{anios.nu_aniomodelo}}
+                              </mat-option>        
+                              </mat-select>
+                            </mat-form-field>
+                          </td>          
+                          <td>
+                            <mat-form-field appearance="fill">
+                              <mat-label>Estado</mat-label>
+                              <mat-select (selectionChange)="CambiarEstado()" [(value)]="selectedEstados">
+                                <mat-option *ngFor="let estados of ListEstados" [value]="estados.idEstado">
+                                    {{estados.descEstado}}
+                              </mat-option>        
+                              </mat-select>
+                            </mat-form-field>
+                          </td>    
+                          <td>
+                            <mat-form-field appearance="fill">
+                              <mat-label>Distribuidor</mat-label>
+                              <mat-select (selectionChange)="CambiarDistribuidor()" [(value)]="selectedDistribuidores">
+                                <mat-option *ngFor="let distri of ListDistribuidores" [value]="distri.idDistribuidor">
+                                    {{distri.descDistribuidor}}
+                              </mat-option>        
+                              </mat-select>
+                            </mat-form-field>
+                          </td>   
+                          <td>
+                            <mat-form-field appearance="fill">
+                              <mat-label>Estatus</mat-label>
+                              <mat-select (selectionChange)="CambiarEstatus()" [(value)]="selectedEstatus">
+                                <mat-option *ngFor="let estat of ListEstatus" [value]="estat.idEst">
+                                    {{estat.descEst}}
+                              </mat-option>        
+                              </mat-select>
+                            </mat-form-field>
+                          </td>   
+                          <td>
+                            <mat-form-field appearance="fill">
+                              <mat-label>VIN</mat-label>
+                              <input matInput type="text" (keydown.enter)="buscar()" [ngModelOptions]="{standalone: true}" [(ngModel)]="Vin">
+                            </mat-form-field>
+                          </td>   
+                        </tr>
+                    </table>
+
+                    <table style="width:95%;" class="table">
+                        <thead >
+                          <tr>
+                            <th scope="col">VIN</th>
+                            <th scope="col">Segmento</th>
+                            <th scope="col">Modelo</th>
+                            <th scope="col">Año</th>
+                            <th scope="col">Motor</th>
+                            <th scope="col">Distribuidor</th>
+                            <th scope="col">Sucursal</th>
+                            <th scope="col">Estado</th>    
+                            <th scope="col">Entrada</th>
+                            <th scope="col">Estatus</th>                            
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of listUnidades">
+                                <td>{{ item.vin }}</td>
+                                <td>{{ item.nombre }}</td>
+                                <td>{{ item.modelo }}</td>
+                                <td>{{ item.nu_aniomodelo }}</td>
+                                <td>{{ item.motor }}</td>
+                                <td>{{ item.descDistribuidor }}</td>
+                                <td>{{ item.alias }}</td>
+                                <td>{{ item.descEstado }}</td>      
+                                <td>{{ item.fchInventario }}</td>
+                                <td>{{ item.descEst }}</td>    
+                              </tr>
+                    </table>
+                  </div>
+                </div>
+              </td>
+            </tr>
+        </table>
+    </mat-drawer-content>
+</mat-drawer-container>

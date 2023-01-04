@@ -30,6 +30,7 @@ import { NumerosPartePipe } from './pipes/numeros-parte.pipe';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatSelectModule} from '@angular/material/select';
 import { CapturaVentaComponent } from './capturaVenta/captura-venta.component';
+import { ListadoUnidadesPublicadasComponent } from './listado-unidades-publicadas/listado-unidades-publicadas.component';
 import { ModelosPipe } from './pipes/modelos.pipe';
 import { FileUploadModule } from 'ng2-file-upload';
 
@@ -66,6 +67,16 @@ const routes: Routes = [
           component: CapturaVentaComponent 
       }
   ]
+},   
+{
+  path: 'listadopublicadas',
+  component: ListadoUnidadesPublicadasComponent,
+  children: [
+      { 
+          path: 'listadopublicadas',
+          component: ListadoUnidadesPublicadasComponent 
+      }
+  ]
 },
 
 ];
@@ -88,8 +99,8 @@ const routes: Routes = [
     PublicarRedComponent,
     ListadoUnidadesDialogComponent,
     DetalleUnidadDialogComponent,
-    RegistrarVentaDialogComponent
-    
+    RegistrarVentaDialogComponent,
+    ListadoUnidadesPublicadasComponent
 
 
   ],

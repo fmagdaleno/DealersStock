@@ -23,6 +23,7 @@ export interface DialogData {
     serie: string = '';
     folio: string = '';
     fecha: string = '';
+    fecha2: string = '';
     rfcEmisor: string = '';
     nombreEmisor: string = '';
     rfcReceptor: string = '';
@@ -59,11 +60,25 @@ export interface DialogData {
     public uploader: FileUploader = new FileUploader({ url: environment.hostUrl + '/Facturas/LeerXML' });
     public hasBaseDropZoneOver: boolean = false;
     public hasAnotherDropZoneOver: boolean = false;
+    maxSize: boolean = false;
   
     constructor(private http: HttpClient, public comunSrv: ComunService, 
       public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
       @Inject(MAT_DIALOG_DATA) public data: Xml) {
         this.factXml = [];
+      }
+
+      maximizeDialog(){
+        this.dialogRef.addPanelClass('full-screen-modal');
+        this.dialogRef.updateSize('100vw','100vh');
+        this.maxSize = true;
+     
+      }
+    
+      minimizeDialog(){
+        this.dialogRef.updateSize('1750px','650px');
+        this.maxSize = false;
+    
       }
   
     onNoClick(): void {
