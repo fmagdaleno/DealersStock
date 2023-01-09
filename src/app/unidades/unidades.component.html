@@ -34,9 +34,7 @@
         <mat-form-field appearance="fill">
           <mat-label>Visualizar</mat-label>
           <mat-select  
-            multiple 
-            (selectionChange)="muestraColumnas($event.value)" 
-            [(ngModel)]="selectedObjects">
+            multiple >
             <mat-option 
             *ngFor="let columna of columnasList" 
             [value]="columna.value">
