@@ -23,9 +23,10 @@ export class UnidadesService {
   })
 
   getAllUnidades(intPageSize: number,intPageNum: number, strModelo: string, strVIN: string, idAntiguedad:number, idCorp:number, strBusqueda:string
-    ,intGFX:any,intLocalidad: any,intClasCorpo:any, pendTraspaso:boolean){
+    ,intGFX:any,intLocalidad: any,intClasCorpo:any, pendTraspaso:boolean,strTipoPedido:string){
     const url_api_Request = environment.hostUrl + '/vw_Unidades/' + intPageSize + '/' + intPageNum + '/' + strModelo + '/'  + strVIN + '/'
-    + idAntiguedad + '/' + idCorp + '/' + strBusqueda + '/'+ intGFX + '/' + intLocalidad + '/'  + intClasCorpo + '/' + pendTraspaso + '/';
+    + idAntiguedad + '/' + idCorp + '/' + strBusqueda + '/'+ intGFX + '/' + intLocalidad + '/'  + intClasCorpo + '/' + pendTraspaso + '/'
+    + strTipoPedido + '/';
     return this.http.get<any[]>(url_api_Request); 
   }
 
@@ -36,24 +37,24 @@ export class UnidadesService {
     return this.http.get<any[]>(url_api_Request); 
   }
 
-  getAllClasesCorporativa(idAntiguedad:number,strBusqueda: string,intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean){
+  getAllClasesCorporativa(idAntiguedad:number,strBusqueda: string,intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean, strTipoPedido:string){
     
     const url_api_Request_Clases = environment.hostUrl + '/ClasesCorporativas/GetClasesCorporativa/' + strBusqueda + '/'
-    + intGFX + '/' + intLocalidad + '/'  + stridClasCorpo + '/' + pendTraspaso + '/' + idAntiguedad + '/';
+    + intGFX + '/' + intLocalidad + '/'  + stridClasCorpo + '/' + pendTraspaso + '/' + idAntiguedad + '/' + strTipoPedido + '/';
     return this.http.get<any[]>(url_api_Request_Clases); 
   }
 
-  getAllClasesCorporativaByAntiguedad(strBusqueda: string,intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean){
+  getAllClasesCorporativaByAntiguedad(strBusqueda: string,intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean, strTipoPedido :string){
     
     const url_api_Request_Clases = environment.hostUrl + '/ClasesCorporativas/GetClasesCorporativaByAntiguedad/' + strBusqueda + '/'
-    + intGFX + '/' + intLocalidad + '/'  + stridClasCorpo + '/' + pendTraspaso + '/';
+    + intGFX + '/' + intLocalidad + '/'  + stridClasCorpo + '/' + pendTraspaso + '/' + strTipoPedido + '/';
     return this.http.get<any[]>(url_api_Request_Clases); 
   }
 
   getModelosPorClase(intPageSize: number,intPageNum: number,IdClasCorp:number, idAntiguedad: number,strBusqueda: string
-    ,intGFX:any,intLocalidad: any,intClasCorpo:any, pendTraspaso:boolean){
+    ,intGFX:any,intLocalidad: any,intClasCorpo:any, pendTraspaso:boolean, strTipoPedido: string){
     const url_api_Request_Modelos = environment.hostUrl + '/ClasesCorporativas/GetModelosPorClase/' + intPageSize + '/' + intPageNum + '/' + IdClasCorp + '/'
-    + idAntiguedad + '/' + strBusqueda + '/' + intGFX + '/' + intLocalidad + '/'  + intClasCorpo + '/' + pendTraspaso + '/';
+    + idAntiguedad + '/' + strBusqueda + '/' + intGFX + '/' + intLocalidad + '/'  + intClasCorpo + '/' + pendTraspaso + '/' + strTipoPedido + '/';
     return this.http.get<any[]>(url_api_Request_Modelos); 
   }
 

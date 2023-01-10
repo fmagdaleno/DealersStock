@@ -63,6 +63,7 @@ export class UnidadesComponent implements OnInit {
   public numAntiguedad: number = 0;
   strBusqueda = '';
   stridAntiguedad: any = 0;
+  strTipoPedido: any = "0";
   stridClasCorpo: any = 0;
   GFX:any = 0;
   localidad:any = ' ';
@@ -87,6 +88,7 @@ export class UnidadesComponent implements OnInit {
   col9 = true;
   col10 = true;
   col11 = true;
+  col12 = true;
   selectedObjects: any;
 
   //paginacinoes
@@ -113,7 +115,8 @@ export class UnidadesComponent implements OnInit {
     {value:'8', label:'Estatus'},
     {value:'9', label:'Antigüedad'},
     {value:'10', label:'Sucursal'},
-    {value:'11', label:'Pedido'}
+    {value:'11', label:'Pedido'},
+    {value:'12', label:'Tipo pedido'}
   ];
 
   constructor(public unidadesServices: UnidadesService
@@ -124,17 +127,17 @@ export class UnidadesComponent implements OnInit {
 
     this.buscadatos(false);
 
-    this.selectedObjects = ['1','2','3','4','5','6','7','8','9','10','11'];
+    this.selectedObjects = ['1','2','3','4','5','6','7','8','9','10','11','12'];
 
   }
 
 
 
   buscadatos(pendTraspaso: boolean){
-    this.getUnidades(20,1,' ', ' ',0,0,this.strBusqueda,0,' ',0,pendTraspaso);
-    this.getClasesCorporativa(0,' ',0,pendTraspaso);
-    this.getModelos(0,0,0,0,this.strBusqueda,0,' ',0,pendTraspaso);
-    this.getClasesCorporativaByAntiguedad(0,' ',0,pendTraspaso);
+    this.getUnidades(20,1,' ', ' ',0,0,this.strBusqueda,0,' ',0,pendTraspaso,this.strTipoPedido);
+    this.getClasesCorporativa(0,' ',0,pendTraspaso,this.strTipoPedido);
+    this.getModelos(0,0,0,0,this.strBusqueda,0,' ',0,pendTraspaso,this.strTipoPedido);
+    this.getClasesCorporativaByAntiguedad(0,' ',0,pendTraspaso,'0');
     this.getDistribuidoresCombo();
     this.getClasificacioCorporativaCombo();
   }
@@ -144,10 +147,10 @@ export class UnidadesComponent implements OnInit {
 busquedaPorTexto(intPageSize: number,intPageNum: number,strModelo: string,strVIN: string,form:NgForm){
   this.strBusqueda = form.value.formBusqueda;
 
-  this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
-  this.getClasesCorporativa( this.GFX,this.localidad,this.stridClasCorpo,false);
-  this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
-  this.getClasesCorporativaByAntiguedad(this.GFX,this.localidad,this.stridClasCorpo,false);
+  this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  this.getClasesCorporativa( this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  this.getClasesCorporativaByAntiguedad(this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
 }
 
 muestraColumnas(e: Event){
@@ -165,6 +168,7 @@ muestraColumnas(e: Event){
   this.col9 = false; 
   this.col10 = false;
   this.col11 = false;
+  this.col12 = false;
 
   this.stridAntiguedad.split(',').forEach((element: string) => {
     //alert(element);
@@ -179,6 +183,7 @@ muestraColumnas(e: Event){
     if(element == '9'){this.col9 = true;} 
     if(element == '10'){this.col10 = true;}
     if(element == '11'){this.col11 = true;}
+    if(element == '12'){this.col12 = true;}
   });
 
   //alert(this.stridAntiguedad.split(','));
@@ -189,30 +194,40 @@ buscaPorDistribuidor(e: Event){
   //alert(form.value.formAntiguedad);
   this.stridAntiguedad = e;
 
-  this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
-  this.getClasesCorporativa(this.GFX,this.localidad,this.stridClasCorpo,false);
-  this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
-  this.getClasesCorporativaByAntiguedad(this.GFX,this.localidad,this.stridClasCorpo,false);
+  this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  this.getClasesCorporativa(this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  this.getClasesCorporativaByAntiguedad(this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+}
+
+buscaPorTipoPedido(e: Event){
+  //alert(form.value.formAntiguedad);
+  this.strTipoPedido = e;
+
+  this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  this.getClasesCorporativa(this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  this.getClasesCorporativaByAntiguedad(this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
 }
 
   buscaPorAntiguedad(e: Event){
     //alert(form.value.formAntiguedad);
     this.stridAntiguedad = e;
 
-    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
-    this.getClasesCorporativa(this.GFX,this.localidad,this.stridClasCorpo,false);
-    this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
-    this.getClasesCorporativaByAntiguedad(this.GFX,this.localidad,this.stridClasCorpo,false);
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+    this.getClasesCorporativa(this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+    this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+    this.getClasesCorporativaByAntiguedad(this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
   }
 
   buscaPorClasCorpo(e: Event){
     //alert(form.value.formAntiguedad);
     this.stridClasCorpo = e;
 
-    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
-    this.getClasesCorporativa(this.GFX,this.localidad,this.stridClasCorpo,false);
-    this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false);
-    this.getClasesCorporativaByAntiguedad(this.GFX,this.localidad,this.stridClasCorpo,false);
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+    this.getClasesCorporativa(this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+    this.getModelos(0,0,0,this.stridAntiguedad,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+    this.getClasesCorporativaByAntiguedad(this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
   }
 
 
@@ -230,14 +245,14 @@ buscaPorDistribuidor(e: Event){
   }*/
 
   getUnidades(intPageSize: number,intPageNum: number,strModelo: string,strVIN: string, idAntiguedad: number,idCorp: number,strBusqueda:string,
-    intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean ): void{
+    intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean, strTipoPedido:string ): void{
     if(strBusqueda == undefined
       || strBusqueda == ''){
         strBusqueda = ' ';
       }
 
     this.unidadesServices
-    .getAllUnidades(intPageSize,intPageNum,strModelo,strVIN,idAntiguedad,idCorp,strBusqueda, intGFX,intLocalidad,stridClasCorpo,pendTraspaso)
+    .getAllUnidades(intPageSize,intPageNum,strModelo,strVIN,idAntiguedad,idCorp,strBusqueda, intGFX,intLocalidad,stridClasCorpo,pendTraspaso,strTipoPedido)
     .subscribe((_unidades:any[]) => {
       this.ListUnidades = _unidades 
       });
@@ -254,7 +269,7 @@ buscaPorDistribuidor(e: Event){
       this.muestraUnidades = true;
   }
 
-  getClasesCorporativa(intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean): void{
+  getClasesCorporativa(intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean, strTipoPedido: string): void{
 
     if(this.strBusqueda == undefined
       || this.strBusqueda == ''){
@@ -262,13 +277,13 @@ buscaPorDistribuidor(e: Event){
       }
 
     this.unidadesServices
-    .getAllClasesCorporativa(this.stridAntiguedad,this.strBusqueda,intGFX,intLocalidad, stridClasCorpo, pendTraspaso)
+    .getAllClasesCorporativa(this.stridAntiguedad,this.strBusqueda,intGFX,intLocalidad, stridClasCorpo, pendTraspaso,this.strTipoPedido)
     .subscribe((_Clases:any[]) => {
       this.ListClasesCorpo = _Clases 
       });
   }
 
-  getClasesCorporativaByAntiguedad(intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean): void{
+  getClasesCorporativaByAntiguedad(intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean, strTipoPedido: string): void{
 
     if(this.strBusqueda == undefined
       || this.strBusqueda == ''){
@@ -276,7 +291,7 @@ buscaPorDistribuidor(e: Event){
       }
 
     this.unidadesServices
-    .getAllClasesCorporativaByAntiguedad(this.strBusqueda,intGFX,intLocalidad, stridClasCorpo, pendTraspaso)
+    .getAllClasesCorporativaByAntiguedad(this.strBusqueda,intGFX,intLocalidad, stridClasCorpo, pendTraspaso,strTipoPedido)
     .subscribe((_Clases:any[]) => {
       this.ListClasesCorpoByAntiguedad = _Clases 
       });
@@ -294,7 +309,7 @@ buscaPorDistribuidor(e: Event){
     this.GFX= e;
     this.localidad = ' ';
 
-    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda,this.GFX,this.localidad,this.stridClasCorpo,false);
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda,this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
 
     this.unidadesServices
     .getLocalidadesCombo(this.GFX)
@@ -316,14 +331,14 @@ buscaPorDistribuidor(e: Event){
   //alert(this.GFX);
     this.localidad = e;
 
-    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda,this.GFX,this.localidad,this.stridClasCorpo,false);
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda,this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
 
   }
 
 
 
   getModelos(pageSize: number, pageNumber: number, IdClasCorp:number, idAntiguedad: number,strBusqueda:string,
-    intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean): void{
+    intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean, strTipoPedido:string): void{
     this.IdClasCorpActual = IdClasCorp;
     if(strBusqueda == undefined
       || strBusqueda == ''){
@@ -337,7 +352,7 @@ buscaPorDistribuidor(e: Event){
         });}*/
 
     this.unidadesServices
-    .getModelosPorClase(pageSize,pageNumber,IdClasCorp,idAntiguedad,strBusqueda,intGFX,intLocalidad,stridClasCorpo,pendTraspaso)
+    .getModelosPorClase(pageSize,pageNumber,IdClasCorp,idAntiguedad,strBusqueda,intGFX,intLocalidad,stridClasCorpo,pendTraspaso,this.strTipoPedido)
     .subscribe((_Modelos:any[]) => {
       this.ListModelos = _Modelos  
       });
@@ -378,7 +393,7 @@ buscaPorDistribuidor(e: Event){
   reagrupaIOnventario(tipoAgrupador: number){
     //alert(tipoAgrupador);
     if(tipoAgrupador == 1){
-      this.getUnidades(20,1,' ',' ',0,0,'',0,'',0,false);
+      this.getUnidades(20,1,' ',' ',0,0,'',0,'',0,false,'0');
     }
     this.intTipoBusqueda =tipoAgrupador;
   }

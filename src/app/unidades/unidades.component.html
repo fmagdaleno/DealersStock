@@ -34,7 +34,9 @@
         <mat-form-field appearance="fill">
           <mat-label>Visualizar</mat-label>
           <mat-select  
-            multiple >
+            multiple 
+            (selectionChange)="muestraColumnas($event.value)" 
+            [(ngModel)]="selectedObjects">
             <mat-option 
             *ngFor="let columna of columnasList" 
             [value]="columna.value">
@@ -49,7 +51,7 @@
       </td>
 
       <td>
-        <!--<mat-form-field appearance="fill">
+        <!--<mat-form-field appearance="fill"> 
           <mat-label>Visualizar</mat-label>
           <mat-select [formControl]="toppings" multiple>
             <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping}}</mat-option>
@@ -141,8 +143,14 @@
   
                     </td>
                     <td>
-  
-                      <!--<p>{{selectedObjects | json}}</p>-->
+                      <mat-form-field appearance="fill">
+                        <mat-label>Tipo pedido</mat-label>
+                      <mat-select   name="formTipoPedido"  #tipoPedidoValue placeholder="Tipo pedido"  (selectionChange)="buscaPorTipoPedido($event.value)">
+                        <mat-option  [value]="0">Todos</mat-option>
+                        <mat-option  [value]="1">Stock</mat-option>
+                        <mat-option  [value]="2">Flotas</mat-option>
+                      </mat-select>
+                    </mat-form-field>
                     </td>
   
                   </tr>
@@ -227,6 +235,7 @@
                                   <tr style="color:blue;">
                                     <td *ngIf="col1">VIN</td>
                                     <td *ngIf="col11">Pedido</td>
+                                    <td *ngIf="col12">Tipo pedido</td>
                                     <td *ngIf="col4">Distribuidor</td>
                                     <td *ngIf="col10">Sucursal</td>
                                     <td *ngIf="col6">Fecha inventario</td>
@@ -252,6 +261,9 @@
                                       </td>
                                       <td *ngIf="col11">
                                         {{unidad.strPedido}}
+                                      </td>
+                                      <td *ngIf="col12">
+                                        {{unidad.strTipoPedido}}
                                       </td>
                                       <td *ngIf="col4">
                                         {{unidad.strNombreDealer}}
@@ -366,6 +378,7 @@
                                                     <tr style="color:blue;">
                                                       <td *ngIf="col1">VIN2</td>
                                                       <td *ngIf="col11">Pedido</td>
+                                                      <td *ngIf="col12">Tipo pedido</td>
                                                       <td *ngIf="col4">Distribuidor</td>
                                                       <td *ngIf="col10">Sucursal</td>
                                                       <td *ngIf="col6">Fecha inventario</td>
@@ -392,6 +405,9 @@
                                                         </td>
                                                         <td *ngIf="col11">
                                                           {{unidad.strPedido}}
+                                                        </td>
+                                                        <td *ngIf="col12">
+                                                          {{unidad.strTipoPedido}}
                                                         </td>
                                                         <td *ngIf="col4">
                                                           {{unidad.strNombreDealer}}
@@ -514,6 +530,7 @@
                       </th>-->
                       <th scope="col" *ngIf="col1">VIN</th>
                       <th scope="col" *ngIf="col11">Pedido</th>
+                      <th scope="col" *ngIf="col12">Tipo pedido</th>
                       <th scope="col" *ngIf="col2">Modelo</th>
                       <th scope="col" *ngIf="col3">Clase corporativa</th>
                       <th scope="col" *ngIf="col4">Distribuidor</th>
@@ -540,6 +557,9 @@
                       </td>
                       <td *ngIf="col11">
                         {{unidad.strPedido}}
+                      </td>
+                      <td *ngIf="col12">
+                        {{unidad.strTipoPedido}}
                       </td>
                       <td *ngIf="col2">
                         {{unidad.modelo}}
@@ -608,6 +628,7 @@
       <tr>
         <th *ngIf="col1">VIN</th>
         <th *ngIf="col11">Pedido</th>
+        <th *ngIf="col12">Pedido</th>
         <th *ngIf="col2">Modelo</th>
         <th *ngIf="col3">Clase corporativa</th>
         <th *ngIf="col4">Distribuidor</th>
@@ -625,6 +646,9 @@
         </td>
         <td *ngIf="col11">
           {{unidad.strPedido}}
+        </td>
+        <td *ngIf="col12">
+          {{unidad.strTipoPedido}}
         </td>
         <td *ngIf="col2">
           {{unidad.modelo}}
