@@ -166,7 +166,7 @@
                       <button  class="MyButton"  type="button" (click)="openDialogMasiveTransferencias(ListUnidades)"><mat-icon class="material-icons color_white">redo</mat-icon>Transferir</button>
                     </td>
                     <td>
-                      <button  class="MyButton"  type="button" (click)="openDialogPublicarRed(ListUnidades)"><mat-icon class="material-icons color_white">publish</mat-icon>Publicar a la red</button>
+                      <button  class="MyButton"  type="button" (click)="openPublicadosRed(ListUnidades, 0)"><mat-icon class="material-icons color_white">publish</mat-icon>Publicar a la red</button>
                     </td>
                     <td><mat-paginator style="font-size:x-small;" *ngIf="intTipoBusqueda == 1" [length]="ListUnidades.length" [pageSize]="20" 
                       (page)="handlePageUnidadesVIN($event)">
@@ -549,7 +549,7 @@
                       <!--<th scope="row">{{ i + 1 }}</th>-->
                       <td *ngIf="col1">
                         <mat-checkbox *ngIf="unidad.intIdTraspaso == 0
-                        && unidad.bitTieneRegistroPendiente ==0"
+                        && unidad.bitTieneRegistroPendiente == 0 && unidad.publicarVID == 0"
                         [checked]="unidad.bitChecked" 
                         (change)="valueChange(unidad,$event)">
                         </mat-checkbox> 
@@ -591,6 +591,7 @@
                   <td>
                     <button *ngIf="unidad.intIdTraspaso > 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)" title="Traspaso entre sucursales"  type="button" ><mat-icon>compare_arrows</mat-icon></button>
                     <button *ngIf="unidad.bitTieneRegistroPendiente > 0" style="font-size:x-small;"  title="Registro de venta"   type="button" ><mat-icon>assignment</mat-icon></button>
+                    <button *ngIf="unidad.publicarVID > 0" style="font-size:x-small;"  title="Publicado en la red" type="button" (click)="openPublicadosRed(ListUnidades, 1)" ><mat-icon>publish</mat-icon></button>
                   </td>
                     </tr>
                     <tr>

@@ -40,12 +40,10 @@
         <td>
             <label >{{uni.strLocalidad}}</label>
         </td>
-
         <td>
-            <button *ngIf="uni.intIdTraspaso == 0"    type="button" ><mat-icon>check</mat-icon>Publicar</button>
-            
+            <button *ngIf="uni.intIdTraspaso == 0 && uni.publicarVID == 0"    type="button" (click)="actpublicacion(uni.vin, 1)"><mat-icon>check</mat-icon>Publicar</button>   
+            <button *ngIf="uni.publicarVID > 0" type="button" (click)="actpublicacion(uni.vin, 0)"><mat-icon>delete</mat-icon>Cancelar Publicación</button>           
         </td>
-
     </tr>
 </table>
 

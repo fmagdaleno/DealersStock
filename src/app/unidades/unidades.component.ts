@@ -9,6 +9,7 @@ import * as XLSX from 'xlsx';
 import {MatDialog, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {DetalleUnidadDialogComponent} from '../navigation/header/header.component';
 import { StringifyOptions } from 'querystring';
+import { ComunService } from '../services/comun.service';
 
 
 export class Group {
@@ -69,7 +70,7 @@ export class UnidadesComponent implements OnInit {
   localidad:any = ' ';
   ListUnidadesDialog: any[] = [];
   dialogRefMasive:any;
- 
+  mostPublicados: number = 0;
 
   vinBus = '';
   vinBus2 = '';
@@ -510,13 +511,25 @@ openRegistrarVenta(unidadesVenta: any[]): void {
 
 /////////Publicar a la red
 openDialogPublicarRed(unidadesTraspaso: any[]): void {
-  this.ListUnidadesDialog = unidadesTraspaso.filter(uni => uni.bitChecked);
+  if(this.mostPublicados==0)
+      this.ListUnidadesDialog = unidadesTraspaso.filter(uni => uni.bitChecked);
+  else
+      this.ListUnidadesDialog = unidadesTraspaso.filter(uni => uni.publicarVID > 0);
 
   const dialogRefMasive = this.dialog.open(PublicarRedComponent, {
     width: '1000px',
     data:this.ListUnidadesDialog , 
   });
+
+  dialogRefMasive.afterClosed().subscribe(result => {
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  });
   //console.log(this.ListUnidadesDialog);
+}
+
+openPublicadosRed(unidadesTrasp: any[], mostPub: number){
+    this.mostPublicados = mostPub;
+    this.openDialogPublicarRed(unidadesTrasp);
 }
 
 /////////Traspasos
@@ -781,8 +794,8 @@ export class PublicarRedComponent implements OnInit {
   errorLocalidad: boolean = false;
   maxSize: boolean = false;
 
-  constructor(public unidadesServices: UnidadesService,
-    public dialogRef: MatDialogRef<PublicarRedComponent>,
+  constructor(public unidadesServices: UnidadesService, public comunSrv: ComunService, 
+    public dialogRef: MatDialogRef<PublicarRedComponent>, 
     @Inject(MAT_DIALOG_DATA) public data: any[],
   ) {} 
 
@@ -805,6 +818,36 @@ export class PublicarRedComponent implements OnInit {
 
   closeDialog(){
     this.dialogRef.close();
+  }
+  
+  actpublicacion(vin: any, publicar: number){
+    var pub: any = {};
+    pub.VIN = vin;
+    pub.publicarVID = publicar;  
+
+    var lst: any = [];
+    lst.push(pub);
+
+    this.comunSrv.post('/Publicadas/PublicarUnidades', lst)
+    .subscribe((_Clases:any[]) => {
+        var res = _Clases 
+
+        if (res.toString()=='1')
+        {
+          if(publicar>0)
+            alert('Se publico correctamente la unidad');
+          else
+            alert('Se quito lo publicación correctamente de la unidad');                    
+          this.data = this.data.filter(uni => uni.vin != vin);
+        }
+        else
+        {
+          if(publicar>0)
+            alert('Ocurrio un error al publicar la unidad');
+          else
+            alert('Ocurrio un error al quitar la publicación de la unidad');
+        }
+      });
   }
 
 }
