@@ -93,7 +93,8 @@
                             <th scope="col">Sucursal</th>
                             <th scope="col">Estado</th>    
                             <th scope="col">Entrada</th>
-                            <th scope="col">Estatus</th>                            
+                            <th scope="col">Estatus</th>  
+                            <th scope="col">SolicitarTransferencia</th>                          
                           </tr>
                         </thead>
                         <tbody>
@@ -108,6 +109,7 @@
                                 <td>{{ item.descEstado }}</td>      
                                 <td>{{ item.fchInventario }}</td>
                                 <td>{{ item.descEst }}</td>    
+                                <td><button style="font-size:x-small;" (click)="solicitarTransferencia(item)" title="Solicitar transferencia"   type="button" ><mat-icon>undo</mat-icon></button></td>
                               </tr>
                     </table>
                   </div>

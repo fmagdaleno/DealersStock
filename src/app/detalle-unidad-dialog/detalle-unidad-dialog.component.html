@@ -28,10 +28,6 @@
             Motor:
             <label style="color: rgba(0, 94, 255, 0.679);">{{this.DetalleUnidad.motor}}</label>
         </td>
-        <td>
-            Segmento:
-            <label style="color: rgba(0, 94, 255, 0.679);">{{this.DetalleUnidad.segmento}}</label>
-        </td>
 
         <td>
             Distribuidor:
@@ -53,9 +49,6 @@
         </td>
         <td>
             <label >Cliente</label>
-        </td>
-        <td>
-            <label >Contacto</label>
         </td>
         <td>
             <label >Job</label>
@@ -85,9 +78,7 @@
         <td>
             <label >{{ped.nB_CLIENTE}}</label>
         </td>
-        <td>
-            <label >{{ped.tX_CONTACTO}}</label>
-        </td>
+
         <td>
             <label >{{ped.cD_JOB}}</label>
         </td>
@@ -116,10 +107,16 @@
             <label >Fecha traspaso</label>
         </td>
         <td>
-            <label >Localidad anterior</label>
+            <label >Distribuidor origen</label>
         </td>
         <td>
-            <label >Localidad nueva</label>
+            <label >Localidad origen</label>
+        </td>
+        <td>
+            <label >Distribuidor destino</label>
+        </td>
+        <td>
+            <label >Localidad destino</label>
         </td>
         <td>
             <label >Estatus</label>
@@ -138,7 +135,13 @@
             <label >{{ven.fecha_Traspaso | date: 'fullDate'}}</label>
         </td>
         <td>
+            <label >{{ven.strDistribuidorAnterior}}</label>
+        </td>
+        <td>
             <label >{{ven.strLocalidadAterior}}</label>
+        </td>
+        <td>
+            <label >{{ven.strDistribuidorNuevo}}</label>
         </td>
         <td>
             <label >{{ven.strLocalidadNueva}}</label>

@@ -16,7 +16,7 @@
         <button  class="MyButton"  type="button" (click)="reagrupaIOnventario(3)" ><mat-icon class="material-icons color_white">group_work</mat-icon>Antigüedad</button>
       </td>
       <td>
-        <button  class="MyButton"  type="button" (click)="buscadatos(true)" ><mat-icon class="material-icons color_white">compare_arrows</mat-icon>Pendiente de traspaso</button>
+        <button  class="MyButton"  type="button" (click)="buscadatos(true)" ><mat-icon class="material-icons color_white">compare_arrows</mat-icon>Pendiente traslado / traspaso</button>
       </td>
       <!--<td *ngIf="intTipoBusqueda == 1"><mat-icon style="color:black;" class="material-icons color_white">search</mat-icon><input  matInput placeholder="VIN,Modelo,Clasificación,Motor" id="idBusquedaVIN" name="idBusquedaVIN" class="form-control"  [(ngModel)]="vinBus"></td>-->
       
@@ -144,8 +144,8 @@
                     </td>
                     <td>
                       <mat-form-field appearance="fill">
-                        <mat-label>Tipo pedido</mat-label>
-                      <mat-select   name="formTipoPedido"  #tipoPedidoValue placeholder="Tipo pedido"  (selectionChange)="buscaPorTipoPedido($event.value)">
+                        <mat-label>Tipo</mat-label>
+                      <mat-select   name="formTipoPedido"  #tipoPedidoValue placeholder="Tipo"  (selectionChange)="buscaPorTipoPedido($event.value)">
                         <mat-option  [value]="0">Todos</mat-option>
                         <mat-option  [value]="1">Stock</mat-option>
                         <mat-option  [value]="2">Flotas</mat-option>
@@ -166,7 +166,7 @@
                       <button  class="MyButton"  type="button" (click)="openDialogMasiveTransferencias(ListUnidades)"><mat-icon class="material-icons color_white">redo</mat-icon>Transferir</button>
                     </td>
                     <td>
-                      <button  class="MyButton"  type="button" (click)="openPublicadosRed(ListUnidades, 0)"><mat-icon class="material-icons color_white">publish</mat-icon>Publicar a la red</button>
+                      <button  class="MyButton"  type="button" (click)="openPublicadosRed(ListUnidades, '')"><mat-icon class="material-icons color_white">publish</mat-icon>Publicar a la red</button>
                     </td>
                     <td><mat-paginator style="font-size:x-small;" *ngIf="intTipoBusqueda == 1" [length]="ListUnidades.length" [pageSize]="20" 
                       (page)="handlePageUnidadesVIN($event)">
@@ -196,7 +196,7 @@
       
                           </td>
                           <td *ngIf=" clasesCorpo.intNumReg > 0">
-                            <label style="color:darkblue;">{{clasesCorpo.intNumReg}} unidades</label>
+                            <label style="color:darkblue;">{{clasesCorpo.intNumReg}} unidades-</label>
                           </td>
                         </tr>
                       </table>
@@ -235,7 +235,7 @@
                                   <tr style="color:blue;">
                                     <td *ngIf="col1">VIN</td>
                                     <td *ngIf="col11">Pedido</td>
-                                    <td *ngIf="col12">Tipo pedido</td>
+                                    <td *ngIf="col12">Tipo</td>
                                     <td *ngIf="col4">Distribuidor</td>
                                     <td *ngIf="col10">Sucursal</td>
                                     <td *ngIf="col6">Fecha inventario</td>
@@ -253,7 +253,10 @@
                                       <!--<th scope="row">{{ i + 1 }}</th>-->
                                       <td *ngIf="col1">
                                         <mat-checkbox *ngIf="unidad.intIdTraspaso == 0
-                                                            && unidad.bitTieneRegistroPendiente ==0"
+                                                            && unidad.bitTieneRegistroPendiente ==0
+                                                            && unidad.publicarVID == 0
+                                                            && unidad.intIdTraslado == 0
+                                                            && unidad.intUnidadApartada == 0"
                                         [checked]="unidad.bitChecked" 
                                         (change)="valueChange(unidad,$event)">
                                         </mat-checkbox>
@@ -289,6 +292,10 @@
                             <td>
                               <button *ngIf="unidad.intIdTraspaso > 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)" title="Traspaso entre sucursales"   type="button" ><mat-icon>compare_arrows</mat-icon></button>
                               <button *ngIf="unidad.bitTieneRegistroPendiente > 0" style="font-size:x-small;"  title="Registro de venta"   type="button" ><mat-icon>assignment</mat-icon></button>
+                              <button *ngIf="unidad.publicarVID > 0 && unidad.intUnidadApartada == 0" style="font-size:x-small;"  title="Publicado en la red" type="button" (click)="openPublicadosRed(ListUnidades, unidad.vin)" ><mat-icon>publish</mat-icon></button>
+                              <button *ngIf="unidad.intIdTraslado > 0 && unidad.intEsReceptor == 1 && unidad.intUnidadApartada == 0" style="font-size:x-small;" (click)="openDialogTransferenciasAceptacion(unidad)" title="Transferencia entre distribuidores"   type="button" ><mat-icon style="color:rgb(0, 204, 0)">undo</mat-icon></button>
+                              <button *ngIf="unidad.intIdTraslado > 0 && unidad.intEsReceptor == 0 && unidad.intUnidadApartada == 0" style="font-size:x-small;" (click)="openDialogTransferenciasAceptacion(unidad)" title="Transferencia entre distribuidores"   type="button" ><mat-icon>redo</mat-icon></button>
+                              <button *ngIf="unidad.intUnidadApartada > 0" style="font-size:x-small;" (click)="openDialogTransferencias(ListUnidades,unidad)" title="Solicitud de transferencia"   type="button" ><mat-icon style="color:blue">redo</mat-icon></button>
                           </td>
                                     </tr>                               
                                   </tbody>
@@ -378,7 +385,7 @@
                                                     <tr style="color:blue;">
                                                       <td *ngIf="col1">VIN2</td>
                                                       <td *ngIf="col11">Pedido</td>
-                                                      <td *ngIf="col12">Tipo pedido</td>
+                                                      <td *ngIf="col12">Tipo</td>
                                                       <td *ngIf="col4">Distribuidor</td>
                                                       <td *ngIf="col10">Sucursal</td>
                                                       <td *ngIf="col6">Fecha inventario</td>
@@ -397,7 +404,10 @@
                                                         <!--<th scope="row">{{ i + 1 }}</th>--> 
                                                         <td *ngIf="col1">
                                                           <mat-checkbox *ngIf="unidad.intIdTraspaso == 0
-                                                          && unidad.bitTieneRegistroPendiente ==0"
+                                                          && unidad.bitTieneRegistroPendiente ==0
+                                                          && unidad.publicarVID == 0
+                                                          && unidad.intIdTraslado == 0
+                                                          && unidad.intUnidadApartada == 0"
                                                           [checked]="unidad.bitChecked" 
                                                           (change)="valueChange(unidad,$event)">
                                                           </mat-checkbox>
@@ -433,6 +443,10 @@
                                               <td>
                                                 <button *ngIf="unidad.intIdTraspaso > 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)" title="Traspaso entre sucursales"   type="button" ><mat-icon>compare_arrows</mat-icon></button>
                                                 <button *ngIf="unidad.bitTieneRegistroPendiente > 0" style="font-size:x-small;"  title="Registro de venta"   type="button" ><mat-icon>assignment</mat-icon></button>
+                                                <button *ngIf="unidad.publicarVID > 0 && unidad.intUnidadApartada == 0" style="font-size:x-small;"  title="Publicado en la red" type="button" (click)="openPublicadosRed(ListUnidades, unidad.vin)" ><mat-icon>publish</mat-icon></button>
+                                                <button *ngIf="unidad.intIdTraslado > 0 && unidad.intEsReceptor == 1 && unidad.intUnidadApartada == 0" style="font-size:x-small;" (click)="openDialogTransferenciasAceptacion(unidad)" title="Transferencia entre distribuidores"   type="button" ><mat-icon style="color:rgb(0, 204, 0)">undo</mat-icon></button>
+                                                <button *ngIf="unidad.intIdTraslado > 0 && unidad.intEsReceptor == 0 && unidad.intUnidadApartada == 0" style="font-size:x-small;" (click)="openDialogTransferenciasAceptacion(unidad)" title="Transferencia entre distribuidores"   type="button" ><mat-icon>redo</mat-icon></button>
+                                                <button *ngIf="unidad.intUnidadApartada > 0" style="font-size:x-small;" (click)="openDialogTransferencias(ListUnidades,unidad)" title="Solicitud de transferencia"   type="button" ><mat-icon style="color:blue">redo</mat-icon></button>
                                               </td>
                                                       </tr>                               
                                                     </tbody>
@@ -530,7 +544,7 @@
                       </th>-->
                       <th scope="col" *ngIf="col1">VIN</th>
                       <th scope="col" *ngIf="col11">Pedido</th>
-                      <th scope="col" *ngIf="col12">Tipo pedido</th>
+                      <th scope="col" *ngIf="col12">Tipo</th>
                       <th scope="col" *ngIf="col2">Modelo</th>
                       <th scope="col" *ngIf="col3">Clase corporativa</th>
                       <th scope="col" *ngIf="col4">Distribuidor</th>
@@ -539,7 +553,7 @@
                       <th scope="col" *ngIf="col6">Fecha inventario</th>
                       <th scope="col" *ngIf="col7">Días plan</th>
                       <th scope="col" *ngIf="col8">Estatus</th>
-                      <th scope="col" *ngIf="col9">Antigüedad</th>
+                      <th scope="col" *ngIf="col9">Antigüedad</th> 
                       <th scope="col">Acción pendiente</th>
                       
                     </tr>
@@ -549,7 +563,10 @@
                       <!--<th scope="row">{{ i + 1 }}</th>-->
                       <td *ngIf="col1">
                         <mat-checkbox *ngIf="unidad.intIdTraspaso == 0
-                        && unidad.bitTieneRegistroPendiente == 0 && unidad.publicarVID == 0"
+                        && unidad.bitTieneRegistroPendiente == 0 
+                        && unidad.publicarVID == 0
+                        && unidad.intIdTraslado == 0
+                        && unidad.intUnidadApartada == 0"
                         [checked]="unidad.bitChecked" 
                         (change)="valueChange(unidad,$event)">
                         </mat-checkbox> 
@@ -590,8 +607,11 @@
                       </td>
                   <td>
                     <button *ngIf="unidad.intIdTraspaso > 0" style="font-size:x-small;" (click)="openDialogTraspasos(unidad)" title="Traspaso entre sucursales"  type="button" ><mat-icon>compare_arrows</mat-icon></button>
-                    <button *ngIf="unidad.bitTieneRegistroPendiente > 0" style="font-size:x-small;"  title="Registro de venta"   type="button" ><mat-icon>assignment</mat-icon></button>
-                    <button *ngIf="unidad.publicarVID > 0" style="font-size:x-small;"  title="Publicado en la red" type="button" (click)="openPublicadosRed(ListUnidades, 1)" ><mat-icon>publish</mat-icon></button>
+                    <button *ngIf="unidad.bitTieneRegistroPendiente > 0 && unidad.intUnidadApartada == 0" style="font-size:x-small;"  title="Registro de venta"   type="button" ><mat-icon>assignment</mat-icon></button>
+                    <button *ngIf="unidad.publicarVID > 0 && unidad.intUnidadApartada == 0" style="font-size:x-small;"  title="Publicado en la red" type="button" (click)="openPublicadosRed(ListUnidades, unidad.vin)" ><mat-icon>publish</mat-icon></button>
+                    <button *ngIf="unidad.intIdTraslado > 0 && unidad.intEsReceptor == 1 && unidad.intUnidadApartada == 0" style="font-size:x-small;" (click)="openDialogTransferenciasAceptacion(unidad)" title="Transferencia entre distribuidores"   type="button" ><mat-icon style="color:rgb(0, 204, 0)">undo</mat-icon></button>
+                    <button *ngIf="unidad.intIdTraslado > 0 && unidad.intEsReceptor == 0 && unidad.intUnidadApartada == 0" style="font-size:x-small;" (click)="openDialogTransferenciasAceptacion(unidad)" title="Transferencia entre distribuidores"   type="button" ><mat-icon>redo</mat-icon></button>
+                    <button *ngIf="unidad.intUnidadApartada > 0" style="font-size:x-small;" (click)="openDialogTransferencias(ListUnidades,unidad)" title="Solicitud de transferencia"   type="button" ><mat-icon style="color:blue">redo</mat-icon></button>
                   </td>
                     </tr>
                     <tr>
@@ -629,7 +649,7 @@
       <tr>
         <th *ngIf="col1">VIN</th>
         <th *ngIf="col11">Pedido</th>
-        <th *ngIf="col12">Pedido</th>
+        <th *ngIf="col12">Tipo</th>
         <th *ngIf="col2">Modelo</th>
         <th *ngIf="col3">Clase corporativa</th>
         <th *ngIf="col4">Distribuidor</th>

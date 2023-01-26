@@ -11,7 +11,8 @@ import { SpinnerComponent } from './shared/components/spinner/spinner.component'
 import { SpinnerInterceptor } from './shared/interceptor/spinner.interceptor';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Routes, RouterModule } from '@angular/router';
-import { UnidadesComponent,MasiveTrasladosComponent, TransferenciasComponent,TrasladosDialogComponent,PublicarRedComponent,RegistrarVentaDialogComponent } from './unidades/unidades.component';
+import { UnidadesComponent,MasiveTrasladosComponent, TransferenciasComponent,TrasladosDialogComponent,PublicarRedComponent,RegistrarVentaDialogComponent
+        ,TransferenciasAceptacionComponent } from './unidades/unidades.component';
 import {MatIconModule} from '@angular/material/icon';
 import {MatToolbarModule} from '@angular/material/toolbar';
 //import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
@@ -42,6 +43,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatRadioModule } from '@angular/material/radio'; 
 import { DialogOverviewExampleDialog } from './../../src/app/capturaVenta/captura-ventaxml.component';
 import { ListadoUnidadesDialogComponent,DetalleUnidadDialogComponent } from './navigation/header/header.component';
+import { DialogoConfirmacionComponent } from './dialogo-confirmacion/dialogo-confirmacion.component';
 
 
 
@@ -100,7 +102,9 @@ const routes: Routes = [
     ListadoUnidadesDialogComponent,
     DetalleUnidadDialogComponent,
     RegistrarVentaDialogComponent,
-    ListadoUnidadesPublicadasComponent
+    ListadoUnidadesPublicadasComponent,
+    TransferenciasAceptacionComponent,
+    DialogoConfirmacionComponent
 
 
   ],

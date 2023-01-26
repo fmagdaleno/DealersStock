@@ -2,9 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\src",
-    "\\src\\app",
-    "\\src\\app\\unidades"
+    "\\src\\environments"
   ],
-  "SelectedNode": "\\src\\app\\unidades\\unidades.component.ts",
+  "SelectedNode": "\\src\\environments\\environment.ts",
   "PreviewInSolutionExplorer": false
 }

@@ -70,7 +70,7 @@ export class UnidadesComponent implements OnInit {
   localidad:any = ' ';
   ListUnidadesDialog: any[] = [];
   dialogRefMasive:any;
-  mostPublicados: number = 0;
+  mostPublicados: string = '';
 
   vinBus = '';
   vinBus2 = '';
@@ -278,7 +278,7 @@ buscaPorTipoPedido(e: Event){
       }
 
     this.unidadesServices
-    .getAllClasesCorporativa(this.stridAntiguedad,this.strBusqueda,intGFX,intLocalidad, stridClasCorpo, pendTraspaso,this.strTipoPedido)
+    .getAllClasesCorporativa(this.stridAntiguedad,this.strBusqueda,intGFX,intLocalidad, stridClasCorpo, pendTraspaso,strTipoPedido)
     .subscribe((_Clases:any[]) => {
       this.ListClasesCorpo = _Clases 
       });
@@ -392,9 +392,9 @@ buscaPorTipoPedido(e: Event){
   }
 
   reagrupaIOnventario(tipoAgrupador: number){
-    //alert(tipoAgrupador);
+
     if(tipoAgrupador == 1){
-      this.getUnidades(20,1,' ',' ',0,0,'',0,'',0,false,'0');
+      this.getUnidades(20,1,' ',' ',0,0,'',0,' ',0,false,'0');
     }
     this.intTipoBusqueda =tipoAgrupador;
   }
@@ -507,14 +507,17 @@ openRegistrarVenta(unidadesVenta: any[]): void {
     data:this.ListUnidadesDialog , 
   });
   //console.log(this.ListUnidadesDialog);
+  dialogRefMasive.afterClosed().subscribe(result => {
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  });
 }
 
 /////////Publicar a la red
 openDialogPublicarRed(unidadesTraspaso: any[]): void {
-  if(this.mostPublicados==0)
+  if(this.mostPublicados=='')
       this.ListUnidadesDialog = unidadesTraspaso.filter(uni => uni.bitChecked);
   else
-      this.ListUnidadesDialog = unidadesTraspaso.filter(uni => uni.publicarVID > 0);
+      this.ListUnidadesDialog = unidadesTraspaso.filter(uni => uni.vin == this.mostPublicados && uni.publicarVID > 0);
 
   const dialogRefMasive = this.dialog.open(PublicarRedComponent, {
     width: '1000px',
@@ -527,7 +530,7 @@ openDialogPublicarRed(unidadesTraspaso: any[]): void {
   //console.log(this.ListUnidadesDialog);
 }
 
-openPublicadosRed(unidadesTrasp: any[], mostPub: number){
+openPublicadosRed(unidadesTrasp: any[], mostPub: string){
     this.mostPublicados = mostPub;
     this.openDialogPublicarRed(unidadesTrasp);
 }
@@ -539,6 +542,10 @@ openDialogTraspasos(unidadesTraspaso: any): void {
     data: {unidadesModel: unidadesTraspaso
         },
   });
+
+  dialogRef.afterClosed().subscribe(result => {
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  });
 }
 
 /////////transferencias
@@ -547,10 +554,33 @@ openDialogMasiveTransferencias(unidadesTraspaso: any[]): void {
 
   const dialogRefMasive = this.dialog.open(TransferenciasComponent, {
     width: '1000px',
-    data:this.ListUnidadesDialog , 
+    data:this.ListUnidadesDialog, 
+    
   });
   //console.log(this.ListUnidadesDialog);
+
+  dialogRefMasive.afterClosed().subscribe(result => {
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  });
 }
+
+/////////transferencias que viene de una solicitud desde unidades publicadas
+openDialogTransferencias(unidadesTraspaso: any[], unidad:any): void {
+  unidad.bitChecked = true;
+  this.ListUnidadesDialog = unidadesTraspaso.filter(uni => uni.bitChecked && uni.intUnidadApartada > 0);
+
+  const dialogRefMasive = this.dialog.open(TransferenciasComponent, {
+    width: '1000px',
+    data:this.ListUnidadesDialog, 
+    
+  });
+  //console.log(this.ListUnidadesDialog);
+
+  dialogRefMasive.afterClosed().subscribe(result => {
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  });
+}
+
 
 //////traspasos masivos
 openDialogMasiveTraspasos(unidadesTraspaso: any[]): void {
@@ -568,6 +598,101 @@ openDialogMasiveTraspasos(unidadesTraspaso: any[]): void {
     data:this.ListUnidadesDialog , 
   });
   //console.log(this.ListUnidadesDialog);
+
+  dialogRefMasive.afterClosed().subscribe(result => {
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  });
+}
+
+/////////Transferencias Aceptación
+openDialogTransferenciasAceptacion(unidadesTransferencias: any): void {
+  const dialogRef = this.dialog.open(TransferenciasAceptacionComponent, {
+    width: '1000px',
+    data: {unidadesModel: unidadesTransferencias
+        },
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    this.getUnidades(20,1,' ', ' ',this.stridAntiguedad,0,this.strBusqueda, this.GFX,this.localidad,this.stridClasCorpo,false,this.strTipoPedido);
+  });
+}
+
+}
+
+
+
+////////////////////////Transferencias aceptacion///////////////////////////
+
+@Component({
+  selector: 'app-transferencias-aceptacion',
+  templateUrl: '../transferencias-aceptacion/transferencias-aceptacion.component.html',
+  styleUrls: ['../transferencias-aceptacion/transferencias-aceptacion.component.css']
+})
+export class TransferenciasAceptacionComponent implements OnInit {
+
+  ListLocalidadesCombo: any[] = [];
+  nuevaLocalidad: any;
+
+  errorLocalidad: boolean = false;
+  maxSize: boolean = false;
+
+  constructor(public unidadesServices: UnidadesService,
+    public dialogRef: MatDialogRef<TransferenciasAceptacionComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+  ) {} 
+
+  ngOnInit(): void {
+    this.unidadesServices
+    .getLocalidadesCombo(this.data.unidadesModel.gfxNuevo)
+    .subscribe((_ListLocalidadesCombo:any[]) => {
+      this.ListLocalidadesCombo = _ListLocalidadesCombo
+      });
+  }
+
+  getNuevaLocalidad(e: Event){
+    this.errorLocalidad = false;
+    this.nuevaLocalidad = e;
+  }
+
+  guardarSolicitudTraspaso(unidadesModel: any, tipoConsulta: number){
+
+    if(this.nuevaLocalidad == undefined
+        && tipoConsulta == 2){
+      this.errorLocalidad = true;
+    }
+
+    else{
+      if(tipoConsulta == 2){
+        unidadesModel.idLocalidadNueva = this.nuevaLocalidad;
+      }
+      else{
+        unidadesModel.idLocalidadNueva = unidadesModel.strLocalidadNueva;
+      } 
+
+      this.unidadesServices.aceptaRechazaTransferencia(unidadesModel,tipoConsulta,unidadesModel.idLocalidadNueva,unidadesModel.vin,unidadesModel.gfxNuevo)
+      .subscribe(complete =>{
+        //this.buscadatos(false);
+        alert("Proceso terminado con exito");
+    });
+    
+  }
+}
+
+maximizeDialog(){
+  this.dialogRef.addPanelClass('full-screen-modal');
+  this.dialogRef.updateSize('100vw','100vh');
+  this.maxSize = true;
+
+}
+
+minimizeDialog(){
+  this.dialogRef.updateSize('1000px');
+  this.maxSize = false;
+
+}
+
+closeDialog(){
+  this.dialogRef.close();
 }
 
 }
@@ -663,9 +788,13 @@ closeDialog(){
 export class TransferenciasComponent implements OnInit {
 
   ListLocalidadesCombo: any[] = [];
-  nuevaLocalidad: any;
-  localidadRepetida: boolean = false;
-  errorLocalidad: boolean = false;
+  ListDistribuidoresCombo: any[] = [];
+  ListTiposPagoCombo: any[] = [];
+  nuevoDistribuidor: any;
+  tipoPago: any;
+  DistribuidorRepetido: boolean = false;
+  errorDistribuidor: boolean = false;
+  errorTipoPago: boolean = false;
   maxSize: boolean = false;
 
   constructor(public unidadesServices: UnidadesService,
@@ -674,7 +803,24 @@ export class TransferenciasComponent implements OnInit {
   ) {} 
 
   ngOnInit(): void {
+    this.getDistribuidoresCombo();
+    this.getTiposPago();
+  }
 
+  getDistribuidoresCombo(){
+    this.unidadesServices
+    .getDistribuidoresComboTraslados()
+    .subscribe((_ListDistribuidoresCombo:any[]) => {
+      this.ListDistribuidoresCombo = _ListDistribuidoresCombo
+      });
+  }
+
+  getTiposPago(){
+    this.unidadesServices
+    .getTiposPago()
+      .subscribe((_ListTiposPagoCombo:any[]) => {
+        this.ListTiposPagoCombo = _ListTiposPagoCombo      
+      });
   }
 
   maximizeDialog(){
@@ -694,6 +840,60 @@ export class TransferenciasComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  getNuevoDistribuidor(e: Event){
+    this.DistribuidorRepetido = false;
+    this.errorDistribuidor = false;
+    this.nuevoDistribuidor = e;
+  }
+
+  getTipoPago(e: Event){
+    this.tipoPago = e;
+    this.errorTipoPago = false;
+  }
+
+  guardarSolicitudTraslado(unidadesModel: any, tipoConsulta: number){
+
+    if (this.tipoPago  == undefined){
+      this.errorTipoPago = true;
+    }
+    else if (unidadesModel.intUnidadApartada > 0)
+    {
+      unidadesModel.idDistribuidorNuev0 = unidadesModel.strNombreDealerSolicitante;
+
+      this.unidadesServices.solicitaTrasferencia(unidadesModel,tipoConsulta,unidadesModel.idDistribuidorNuev0,unidadesModel.vin,unidadesModel.pk_TipoPago)
+      .subscribe(complete =>{
+        alert("Proceso terminado con exito");
+    });
+    }
+    else{
+
+         if(this.nuevoDistribuidor == undefined
+            && tipoConsulta == 1){
+          this.errorDistribuidor = true;
+        }
+        else if(this.nuevoDistribuidor == unidadesModel.idLocalidad
+          && tipoConsulta == 1){
+          this.DistribuidorRepetido = true;
+        }
+        else{
+          unidadesModel.pk_TipoPago = this.tipoPago ;
+          if(tipoConsulta == 1){
+            unidadesModel.idDistribuidorNuev0 = this.nuevoDistribuidor;
+          }
+
+          }
+        
+          this.unidadesServices.solicitaTrasferencia(unidadesModel,tipoConsulta,unidadesModel.idDistribuidorNuev0,unidadesModel.vin,unidadesModel.pk_TipoPago)
+          .subscribe(complete =>{
+            alert("Proceso terminado con exito");
+        });
+
+    }
+
+    
+  
+}
+
 }
 
 
@@ -707,6 +907,7 @@ export class TransferenciasComponent implements OnInit {
 export class MasiveTrasladosComponent implements OnInit {
 
   ListLocalidadesCombo: any[] = [];
+ 
   nuevaLocalidad: any;
   localidadRepetida: boolean = false;
   errorLocalidad: boolean = false;

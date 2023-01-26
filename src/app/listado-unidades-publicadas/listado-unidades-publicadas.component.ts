@@ -4,6 +4,8 @@ import { FormControl, FormGroupDirective, NgForm, Validators} from '@angular/for
 import { ErrorStateMatcher} from '@angular/material/core';
 import { ComunService } from '../services/comun.service';
 import {UnidadesService} from '../services/unidades.service';
+import { DialogoConfirmacionComponent } from '../dialogo-confirmacion/dialogo-confirmacion.component'
+
 
 
 @Component({
@@ -152,4 +154,26 @@ export class ListadoUnidadesPublicadasComponent implements OnInit {
           this.selectedEstatus = 0;
       });
   }
+
+  solicitarTransferencia(unidad:any): void {
+    this.dialog
+      .open(DialogoConfirmacionComponent, {
+        data: 'La unidad será solicitada al distribuidor para serle transferida  ¿Desea continuar?'
+      })
+      .afterClosed()
+      .subscribe((confirmado: Boolean) => {
+        if (confirmado) {
+          this.unidadesServices.apartaUnidad(unidad.idUnidad)
+          .subscribe(complete =>{
+            //this.buscadatos(false);
+            this.cambiaSegmento();
+            alert("Unidad solicitada.");
+        });
+        } else {
+          alert("La unidad no fue solicitada.");
+        }
+      });
+  }
+
+
 }

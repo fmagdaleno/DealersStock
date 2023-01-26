@@ -19,10 +19,13 @@
             <label >VIN</label>
         </td>
         <td>
-            <label >Distribuidor</label>
+            <label >Distribuidor origen</label>
         </td>
         <td>
-            <label >Sucursal</label>
+            <label >Distribuidor destino</label>
+        </td>
+        <td>
+            <label >Tipo pago</label>
         </td>
 
         <td>
@@ -37,14 +40,45 @@
         <td>
             <label >{{uni.strNombreDealer}}</label>
         </td>
+        <td *ngIf="uni.intUnidadApartada == 0">
+            <label *ngIf="errorDistribuidor" style="color: red;">Selecciona el distribuidor</label>
+            <mat-form-field appearance="fill">
+                <mat-label>Distribuidor</mat-label>
+                <mat-select
+                (selectionChange)="getNuevoDistribuidor($event.value)">
+                  <mat-option 
+                  *ngFor="let distribubidor of ListDistribuidoresCombo" 
+                  [value]="distribubidor.gfx">
+                  {{distribubidor.strNombreDealer}}
+                </mat-option>
+
+                </mat-select>
+              </mat-form-field>
+        </td>
+        <td *ngIf="uni.intUnidadApartada > 0">
+            <label >{{uni.strNombreDealerSolicitante}}</label>
+        </td>
         <td>
-            <label >{{uni.strLocalidad}}</label>
+            <label *ngIf="errorTipoPago" style="color: red;">Selecciona el tipo de pago</label>
+            <mat-form-field appearance="fill">
+                <mat-label>Tipo pago</mat-label>
+                <mat-select
+                (selectionChange)="getTipoPago($event.value)">
+                  <mat-option 
+                  *ngFor="let tipoPago of ListTiposPagoCombo" 
+                  [value]="tipoPago.pk_TipoPago">
+                  {{tipoPago.tx_Descripcion}}
+                </mat-option>
+
+                </mat-select>
+              </mat-form-field>
         </td>
 
         <td>
-            <button *ngIf="uni.intIdTraspaso == 0"    type="button" ><mat-icon>check</mat-icon>Transferir</button>
             
+            <button *ngIf="uni.intIdTraspaso == 0" (click)="guardarSolicitudTraslado(uni,1)"   type="button" ><mat-icon>check</mat-icon>Solicitar tranferencia</button>
+    
         </td>
-
+   
     </tr>
 </table>

@@ -26,7 +26,7 @@ export class UnidadesService {
     ,intGFX:any,intLocalidad: any,intClasCorpo:any, pendTraspaso:boolean,strTipoPedido:string){
     const url_api_Request = environment.hostUrl + '/vw_Unidades/' + intPageSize + '/' + intPageNum + '/' + strModelo + '/'  + strVIN + '/'
     + idAntiguedad + '/' + idCorp + '/' + strBusqueda + '/'+ intGFX + '/' + intLocalidad + '/'  + intClasCorpo + '/' + pendTraspaso + '/'
-    + strTipoPedido + '/';
+    + strTipoPedido + '/' + window[<any>'varGlobal_User'] + '/';
     return this.http.get<any[]>(url_api_Request); 
   }
 
@@ -40,21 +40,21 @@ export class UnidadesService {
   getAllClasesCorporativa(idAntiguedad:number,strBusqueda: string,intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean, strTipoPedido:string){
     
     const url_api_Request_Clases = environment.hostUrl + '/ClasesCorporativas/GetClasesCorporativa/' + strBusqueda + '/'
-    + intGFX + '/' + intLocalidad + '/'  + stridClasCorpo + '/' + pendTraspaso + '/' + idAntiguedad + '/' + strTipoPedido + '/';
+    + intGFX + '/' + intLocalidad + '/'  + stridClasCorpo + '/' + pendTraspaso + '/' + idAntiguedad + '/' + strTipoPedido + '/' + window[<any>'varGlobal_User'] + '/';
     return this.http.get<any[]>(url_api_Request_Clases); 
   }
 
   getAllClasesCorporativaByAntiguedad(strBusqueda: string,intGFX:any,intLocalidad: any, stridClasCorpo:number, pendTraspaso:boolean, strTipoPedido :string){
     
     const url_api_Request_Clases = environment.hostUrl + '/ClasesCorporativas/GetClasesCorporativaByAntiguedad/' + strBusqueda + '/'
-    + intGFX + '/' + intLocalidad + '/'  + stridClasCorpo + '/' + pendTraspaso + '/' + strTipoPedido + '/';
+    + intGFX + '/' + intLocalidad + '/'  + stridClasCorpo + '/' + pendTraspaso + '/' + strTipoPedido + '/'  + window[<any>'varGlobal_User'] + '/';
     return this.http.get<any[]>(url_api_Request_Clases); 
   }
 
   getModelosPorClase(intPageSize: number,intPageNum: number,IdClasCorp:number, idAntiguedad: number,strBusqueda: string
     ,intGFX:any,intLocalidad: any,intClasCorpo:any, pendTraspaso:boolean, strTipoPedido: string){
     const url_api_Request_Modelos = environment.hostUrl + '/ClasesCorporativas/GetModelosPorClase/' + intPageSize + '/' + intPageNum + '/' + IdClasCorp + '/'
-    + idAntiguedad + '/' + strBusqueda + '/' + intGFX + '/' + intLocalidad + '/'  + intClasCorpo + '/' + pendTraspaso + '/' + strTipoPedido + '/';
+    + idAntiguedad + '/' + strBusqueda + '/' + intGFX + '/' + intLocalidad + '/'  + intClasCorpo + '/' + pendTraspaso + '/' + strTipoPedido + '/' + window[<any>'varGlobal_User'] + '/';
     return this.http.get<any[]>(url_api_Request_Modelos); 
   }
 
@@ -79,7 +79,7 @@ export class UnidadesService {
   }
 
   mandaAPendientes(unidades:any[]){
-    const url_api_SolicitaReProceso= environment.hostUrl + '/vw_Unidades/EnviarAPendientes/u01p024/' // + window['varGlobal_User'] + '/';
+    const url_api_SolicitaReProceso= environment.hostUrl + '/vw_Unidades/EnviarAPendientes/' + window[<any>'varGlobal_User'] + '/';
     //alert(url_api_SolicitaReProceso);
     return this.http
     .post<any[]>(url_api_SolicitaReProceso,unidades,{headers: this.headers})
@@ -89,8 +89,17 @@ export class UnidadesService {
 
   ////modal
 
+  aceptaRechazaTransferencia(unidades:any,tipoConsulta:number, sucursalNueva:number,strVIN:string, distribuidorNuevo:number){
+    const url_api_SolicitaReProceso= environment.hostUrl + '/vw_Unidades/AceptaRechazaTransferencia/' + window[<any>'varGlobal_User'] + '/' + tipoConsulta + '/' + sucursalNueva + '/'
+    + strVIN + '/' + distribuidorNuevo + '/' // + window['varGlobal_User'] + '/';
+    //alert(url_api_SolicitaReProceso);
+    return this.http
+    .post<any[]>(url_api_SolicitaReProceso,{headers: this.headers})
+    .pipe(map(data => data));
+  }
+
   solicitaTraspaso(unidades:any,tipoConsulta:number, sucursalNueva:number,strVIN:string){
-    const url_api_SolicitaReProceso= environment.hostUrl + '/vw_Unidades/SolicitaTraspaso/u01p024/' + tipoConsulta + '/' + sucursalNueva + '/'
+    const url_api_SolicitaReProceso= environment.hostUrl + '/vw_Unidades/SolicitaTraspaso/'+ window[<any>'varGlobal_User'] + '/' + tipoConsulta + '/' + sucursalNueva + '/'
     + strVIN + '/' // + window['varGlobal_User'] + '/';
     //alert(url_api_SolicitaReProceso);
     return this.http
@@ -138,6 +147,33 @@ export class UnidadesService {
 
   eliminaRegistro(strVIN:string){
     const url_api_SolicitaReProceso= environment.hostUrl + '/vw_Unidades/EliminaRegistro/' + strVIN + '/' // + window['varGlobal_User'] + '/';
+    //alert(url_api_SolicitaReProceso);
+    return this.http
+    .post<any[]>(url_api_SolicitaReProceso,{headers: this.headers})
+    .pipe(map(data => data));
+  }
+
+  getDistribuidoresComboTraslados(){
+    const url_api_Request = environment.hostUrl + '/vw_Unidades/GetDealersComboTraslados/';
+    return this.http.get<any[]>(url_api_Request); 
+  }
+
+  solicitaTrasferencia(unidades:any,tipoConsulta:number, distribuidorNuevo:number,strVIN:string, pk_TipoPago: number){
+    const url_api_SolicitaReProceso= environment.hostUrl + '/vw_Unidades/SolicitaTransferencia/'+ window[<any>'varGlobal_User'] + '/' + tipoConsulta + '/' + distribuidorNuevo + '/'
+    + strVIN + '/' + pk_TipoPago + '/';
+    //alert(url_api_SolicitaReProceso);
+    return this.http
+    .post<any[]>(url_api_SolicitaReProceso,{headers: this.headers})
+    .pipe(map(data => data));
+  }
+
+  getTiposPago(){
+    const url_api_Request = environment.hostUrl + '/vw_Unidades/GetTiposPago/';
+    return this.http.get<any[]>(url_api_Request); 
+  }
+
+  apartaUnidad(idUnidad:number){
+    const url_api_SolicitaReProceso= environment.hostUrl + '/vw_Unidades/ApartaUnidad/' + idUnidad + '/' + window[<any>'varGlobal_User'] + '/';
     //alert(url_api_SolicitaReProceso);
     return this.http
     .post<any[]>(url_api_SolicitaReProceso,{headers: this.headers})
