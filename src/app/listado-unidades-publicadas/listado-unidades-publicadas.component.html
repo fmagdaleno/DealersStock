@@ -41,17 +41,7 @@
                               </mat-option>        
                               </mat-select>
                             </mat-form-field>
-                          </td>          
-                          <td>
-                            <mat-form-field appearance="fill">
-                              <mat-label>Estado</mat-label>
-                              <mat-select (selectionChange)="CambiarEstado()" [(value)]="selectedEstados">
-                                <mat-option *ngFor="let estados of ListEstados" [value]="estados.idEstado">
-                                    {{estados.descEstado}}
-                              </mat-option>        
-                              </mat-select>
-                            </mat-form-field>
-                          </td>    
+                          </td>            
                           <td>
                             <mat-form-field appearance="fill">
                               <mat-label>Distribuidor</mat-label>
@@ -62,6 +52,16 @@
                               </mat-select>
                             </mat-form-field>
                           </td>   
+                          <td>
+                            <mat-form-field appearance="fill">
+                              <mat-label>Sucursal</mat-label>
+                              <mat-select (selectionChange)="CambiarLocal()" [(value)]="selectedSucursal">
+                                <mat-option *ngFor="let sucur of ListSucursal" [value]="sucur.idlocalidad">
+                                    {{sucur.strNombreLocalidad}}
+                              </mat-option>        
+                              </mat-select>
+                            </mat-form-field>
+                          </td>  
                           <td>
                             <mat-form-field appearance="fill">
                               <mat-label>Estatus</mat-label>
@@ -91,7 +91,6 @@
                             <th scope="col">Motor</th>
                             <th scope="col">Distribuidor</th>
                             <th scope="col">Sucursal</th>
-                            <th scope="col">Estado</th>    
                             <th scope="col">Entrada</th>
                             <th scope="col">Estatus</th>  
                             <th scope="col">SolicitarTransferencia</th>                          
@@ -106,7 +105,6 @@
                                 <td>{{ item.motor }}</td>
                                 <td>{{ item.descDistribuidor }}</td>
                                 <td>{{ item.alias }}</td>
-                                <td>{{ item.descEstado }}</td>      
                                 <td>{{ item.fchInventario }}</td>
                                 <td>{{ item.descEst }}</td>    
                                 <td><button style="font-size:x-small;" (click)="solicitarTransferencia(item)" title="Solicitar transferencia"   type="button" ><mat-icon>undo</mat-icon></button></td>

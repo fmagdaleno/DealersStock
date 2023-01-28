@@ -22,6 +22,9 @@
                                 Pedido: {{ xm.cD_PEDIDO }}
                             </td>
                             <td>
+                                Tipo Pedido: {{ xm.tX_TIPO_FLOTILLA }}
+                            </td>
+                            <td>
                                 Modelo: {{ xm.nB_MODELO }} 
                             </td>
                             <td>
@@ -246,17 +249,42 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
+                                <td rowspan="3" colspan="2"> 
+                                    <table *ngIf="bCyt" style="overflow:hidden; width: 100%;">    
+                                        <tr> 
+                                            <td colspan="2" style="text-align:center;background-color:rgb(241, 241, 241);">
+                                                <h4 style="margin: 3px">CAPTURA DATOS DTU</h4> 
+                                            </td>   
+                                        </tr>
+                                        <tr> 
+                                            <td class="labeldatos" style="width:150px;">DTU:</td>
+                                            <td style="background-color:white;">
+                                                <mat-form-field>
+                                                    <input matInput [formControl]="fecDTUFormControl" [matDatepicker]="fecDTU" >
+                                                    <mat-datepicker-toggle matSuffix [for]="fecDTU"></mat-datepicker-toggle>
+                                                    <mat-datepicker #fecDTU></mat-datepicker>
+                                                </mat-form-field>
+                                                <mat-error *ngIf="fecDTUFormControl.hasError('required')">
+                                                    DTU es <strong>requerido</strong>
+                                                </mat-error>
+                                            </td>   
+                                        </tr> 
+                                        <tr> 
+                                            <td class="labeldatos" style="width:150px;">Odómetro:</td>
+                                            <td style="background-color:white;">            
+                                                <mat-form-field style="width: 100%;">
+                                                    <input matInput type="number" min="1" OnlyNumber="true" [formControl]="odoFormControl" maxlength="6" >
+                                                    <mat-error *ngIf="odoFormControl.hasError('required')">
+                                                        Odómetro es <strong>requerido</strong>
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </td>   
+                                        </tr> 
+                                    </table>
+                                </td>
+                                
                             </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td></td>
-                            </tr>
+                          
                         </tbody>
                     </table>
                 </td>

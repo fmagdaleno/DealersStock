@@ -235,7 +235,8 @@
                                   <tr style="color:blue;">
                                     <td *ngIf="col1">VIN</td>
                                     <td *ngIf="col11">Pedido</td>
-                                    <td *ngIf="col12">Tipo</td>
+                                    <td *ngIf="col12">Tipo pedido</td>
+                                    <td *ngIf="col12">Tipo venta</td>
                                     <td *ngIf="col4">Distribuidor</td>
                                     <td *ngIf="col10">Sucursal</td>
                                     <td *ngIf="col6">Fecha inventario</td>
@@ -267,6 +268,9 @@
                                       </td>
                                       <td *ngIf="col12">
                                         {{unidad.strTipoPedido}}
+                                      </td>
+                                      <td *ngIf="col12">
+                                        {{unidad.tx_tipo_flotilla}}
                                       </td>
                                       <td *ngIf="col4">
                                         {{unidad.strNombreDealer}}
@@ -385,7 +389,8 @@
                                                     <tr style="color:blue;">
                                                       <td *ngIf="col1">VIN2</td>
                                                       <td *ngIf="col11">Pedido</td>
-                                                      <td *ngIf="col12">Tipo</td>
+                                                      <td *ngIf="col12">Tipo pedido</td>
+                                                      <td *ngIf="col12">Tipo venta</td>
                                                       <td *ngIf="col4">Distribuidor</td>
                                                       <td *ngIf="col10">Sucursal</td>
                                                       <td *ngIf="col6">Fecha inventario</td>
@@ -418,6 +423,9 @@
                                                         </td>
                                                         <td *ngIf="col12">
                                                           {{unidad.strTipoPedido}}
+                                                        </td>
+                                                        <td *ngIf="col12">
+                                                          {{unidad.tx_tipo_flotilla}}
                                                         </td>
                                                         <td *ngIf="col4">
                                                           {{unidad.strNombreDealer}}
@@ -544,7 +552,8 @@
                       </th>-->
                       <th scope="col" *ngIf="col1">VIN</th>
                       <th scope="col" *ngIf="col11">Pedido</th>
-                      <th scope="col" *ngIf="col12">Tipo</th>
+                      <th scope="col" *ngIf="col12">Tipo pedido</th>
+                      <th scope="col" *ngIf="col12">Tipo venta</th>
                       <th scope="col" *ngIf="col2">Modelo</th>
                       <th scope="col" *ngIf="col3">Clase corporativa</th>
                       <th scope="col" *ngIf="col4">Distribuidor</th>
@@ -577,6 +586,9 @@
                       </td>
                       <td *ngIf="col12">
                         {{unidad.strTipoPedido}}
+                      </td>
+                      <td *ngIf="col12">
+                        {{unidad.tx_tipo_flotilla}}
                       </td>
                       <td *ngIf="col2">
                         {{unidad.modelo}}

@@ -40,6 +40,7 @@ export class Xml {
   cD_CLASIFCORP: string = '';
   nB_CLASIFCORP: string = '';
   idDealer: string = '';
+  tX_TIPO_FLOTILLA: string = '';
 }
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -81,6 +82,8 @@ export class CapturaVentaComponent implements OnInit {
     tipoFinFormControl = new FormControl('', [Validators.required,]);
     entiFinanFormControl = new FormControl('', [Validators.required,]);
     fecEstFormControl = new FormControl('', [Validators.required,]);
+    fecDTUFormControl = new FormControl('', [Validators.required,]);
+    odoFormControl = new FormControl('', [Validators.required,]);
     
     startDate = new Date();
     xm: Xml = new Xml();
@@ -88,8 +91,11 @@ export class CapturaVentaComponent implements OnInit {
     otra:  string = '';
     valido: boolean=false;
     fecEst = new Date();
+    fecDTU = new Date();
     bFinan: boolean=false;
     ntUser: string = 'YYYAXC4';
+    bCyt: boolean=false;
+    tipcli: number = 0;
 
     listTipoCli: any[] = [];
     listTipoFinan: any[] = [];
@@ -146,13 +152,17 @@ export class CapturaVentaComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.bCyt = false;
       if(result!=undefined){
+        this.cancelar();
         this.xm = result;
-
+        this.bCyt = this.xm.vin.toUpperCase().startsWith('3H');
         this.rfcReceptorFrmCtl.setValue(this.xm.rfcReceptor);
         this.razonFormControl.setValue(this.xm.nombreReceptor);
         this.getSucursales();
         this.getCli();
+        this.tipcli = Number(this.xm.cD_CLASIFCORP);
+        this.getTipoClientes();
         const [day, month, year] = this.xm.fecha.split('/');
         this.startDate = new Date(+year, +month - 1, +day);
         //this.fecEst = new Date(+year, +month - 1, +day);
@@ -163,7 +173,8 @@ export class CapturaVentaComponent implements OnInit {
   
   
   getTipoClientes(): void{
-  this.comunSrv.get('/tipoclientes')
+    this.listTipoCli = [];
+  this.comunSrv.get('/tipoclientes/filtrada/' + this.tipcli)
   .subscribe((_Clases:any[]) => {
     this.listTipoCli = _Clases 
     });
@@ -172,6 +183,7 @@ export class CapturaVentaComponent implements OnInit {
   changeCli(event:any)
   {
     if(event.isUserInput) {
+      this.selectedTipcl = event.source.value;
       this.getAplicacion();
     }
   }
@@ -272,6 +284,7 @@ export class CapturaVentaComponent implements OnInit {
       changeEdo(event:any)
       {
         if(event.isUserInput) {
+          this.selectededo = event.source.value;
           this.getCiudades();
         }
       }
@@ -321,7 +334,11 @@ export class CapturaVentaComponent implements OnInit {
       this.selectedFinan="2";
 
       this.selectedTipoFin = 0;
-
+      this.bCyt = false;
+      this.odoFormControl.reset();
+      this.fecDTUFormControl.setValue(this.startDate);  
+      this.tipcli = 0;
+this.getTipoClientes();
       this.onFinanChange();
     }
 
@@ -354,9 +371,20 @@ export class CapturaVentaComponent implements OnInit {
         vta.esFinan = (this.selectedFinan=='1');
         vta.idfinan = 0;
         vta.fchFinan = this.fecEstFormControl.value;
+        vta.pedido = this.xm.cD_PEDIDO;
+        vta.tipoPedido = this.xm.tX_TIPO_FLOTILLA;
+        vta.modelo = this.xm.nB_MODELO;
+        vta.clasCorp = this.xm.nB_CLASIFCORP;
+
         if(this.selectedFinan=='1')
         {
           vta.idfinan = this.selectedEntFin;
+        }
+        vta.esDTU = this.bCyt;
+        vta.Odometro = 0;
+        if(this.bCyt){
+          vta.Odometro = this.odoFormControl.value;
+          vta.FchDTU = this.fecDTUFormControl.value;
         }
 
         var cte: any = {};
@@ -525,6 +553,19 @@ export class CapturaVentaComponent implements OnInit {
       if(!this.fecEstFormControl.valid)
       {
         this.fecEstFormControl.markAllAsTouched();
+        this.valido=false;
+      }
+    }
+    if(this.bCyt)
+    {
+      if(!this.odoFormControl.valid)
+      {
+        this.odoFormControl.markAllAsTouched();
+        this.valido=false;
+      }
+      if(!this.fecDTUFormControl.valid)
+      {
+        this.fecDTUFormControl.markAllAsTouched();
         this.valido=false;
       }
     }
