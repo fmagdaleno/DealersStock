@@ -17,14 +17,14 @@ export class ListadoUnidadesPublicadasComponent implements OnInit {
   ListClasCorpoCombo: any[] = [];
   ListModeloPub: any[] = [];
   ListAnios: any[] = [];
-  ListEstados: any[] = [];
+  ListSucursal: any[] = [];
   ListDistribuidores: any[] = [];
   ListEstatus: any[] = [];
   listUnidades: any[] = [];
   selectedClasCorp: number = 0;
   selectedModPub: string = 'Todos';
   selectedAnioPub: string = 'Todos';
-  selectedEstados: number = 0;
+  selectedSucursal: number = 0;
   selectedDistribuidores: number = 0;
   selectedEstatus: number = 0;
   Vin: string = '';
@@ -39,8 +39,8 @@ export class ListadoUnidadesPublicadasComponent implements OnInit {
   buscar(){
     var svin = (this.Vin == '' ? ' ' : this.Vin);
     this.comunSrv.get('/publicadas/ObtenerUnidadesPublicado/' + this.selectedClasCorp + '/' + this.selectedModPub + '/' 
-                  + this.selectedAnioPub + '/' + this.selectedEstados + '/' + this.selectedDistribuidores + '/' 
-                  + svin + '/' + this.selectedEstatus)
+                  + this.selectedAnioPub + '/' + this.selectedDistribuidores + '/' 
+                  + svin + '/' + this.selectedEstatus + '/' + this.selectedSucursal)
     .subscribe((_Clases:any[]) => {       
           this.listUnidades = _Clases;
       });
@@ -49,36 +49,36 @@ export class ListadoUnidadesPublicadasComponent implements OnInit {
   cambiaSegmento(){
     this.getModelosPublicados();
     this.getAniosPublicados();
-    this.getEstadosPublicados();
     this.getDistribuidorPublicados();
+    this.getLocalidadesPublicados();
     this.getEstatusPublicados();
     this.buscar();
   }
 
   cambiarModelo(){
     this.getAniosPublicados(); 
-    this.getEstadosPublicados();
     this.getDistribuidorPublicados();
+    this.getLocalidadesPublicados();
     this.getEstatusPublicados();
     this.buscar();
   }
 
   CambiarAnio(){    
-    this.getEstadosPublicados();
     this.getDistribuidorPublicados();
+    this.getLocalidadesPublicados();
     this.getEstatusPublicados();
     this.buscar();
-  }
-  
-  CambiarEstado(){    
-      this.getDistribuidorPublicados();
-      this.getEstatusPublicados();
-      this.buscar();
-  }
+  }  
 
   CambiarDistribuidor(){    
     this.getEstatusPublicados();
+    this.getLocalidadesPublicados();
     this.buscar();
+  }
+
+  CambiarLocal(){    
+      this.getEstatusPublicados();
+      this.buscar();
   }
 
   CambiarEstatus(){
@@ -117,21 +117,9 @@ export class ListadoUnidadesPublicadasComponent implements OnInit {
       });
   }
 
-  getEstadosPublicados(){
-    this.comunSrv.get('/publicadas/ObtenerEstadoPublicado/' + this.selectedClasCorp + '/' + this.selectedModPub + '/' + this.selectedAnioPub)
-    .subscribe((_Clases:any[]) => {
-        var arr: any = {};
-        arr.idEstado = 0;
-        arr.descEstado= 'Todos';
-        _Clases.unshift(arr);
-          this.ListEstados = _Clases;
-          this.selectedEstados = 0;
-      });
-  }
-
   getDistribuidorPublicados(){
     this.comunSrv.get('/publicadas/ObtenerDistribuidorPublicado/' + this.selectedClasCorp + '/' + this.selectedModPub + '/' 
-                      + this.selectedAnioPub + '/' + this.selectedEstados)
+                      + this.selectedAnioPub)
     .subscribe((_Clases:any[]) => {
         var arr: any = {};
         arr.idDistribuidor = 0;
@@ -142,9 +130,21 @@ export class ListadoUnidadesPublicadasComponent implements OnInit {
       });
   }
 
+  getLocalidadesPublicados(){
+    this.comunSrv.get('/publicadas/ObtenerSucursalPublicado/' + this.selectedClasCorp + '/' + this.selectedModPub + '/' + this.selectedAnioPub + '/' + this.selectedDistribuidores)
+    .subscribe((_Clases:any[]) => {
+        var arr: any = {};
+        arr.idlocalidad = 0;
+        arr.strNombreLocalidad= 'Todos';
+        _Clases.unshift(arr);
+          this.ListSucursal = _Clases;
+          this.selectedSucursal = 0;
+      });
+  }
+
   getEstatusPublicados(){
     this.comunSrv.get('/publicadas/ObtenerEstatusPublicado/' + this.selectedClasCorp + '/' + this.selectedModPub + '/' 
-                  + this.selectedAnioPub + '/' + this.selectedEstados + '/' + this.selectedDistribuidores)
+                  + this.selectedAnioPub + '/' + this.selectedDistribuidores + '/' + this.selectedSucursal)
     .subscribe((_Clases:any[]) => {
         var arr: any = {};
         arr.idEst = 0;

@@ -45,6 +45,7 @@ export interface DialogData {
     cD_CLASIFCORP: string = '';
     nB_CLASIFCORP: string = '';
     idDealer: string = '';
+    tX_TIPO_FLOTILLA: string = '';
   }
 
 @Component({
