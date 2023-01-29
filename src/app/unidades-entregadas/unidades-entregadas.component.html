@@ -1,0 +1,243 @@
+<div class="cabecera" style="text-align: right;">
+
+          <h3 *ngIf="boolEntregadas" style="color: orange;">Unidades entregadas </h3>
+          <h3 *ngIf="!boolEntregadas" style="color: orange;">Unidades NO entregadas </h3>
+    <hr>
+
+  </div>
+  <div class="cabecera" style="text-align: right;">
+  <mat-form-field appearance="fill">
+    <mat-label>Reporte de unidades...</mat-label>
+  <mat-select   name="formTipoReporte"  #entregadas placeholder="Reporte de unidades..."  (selectionChange)="cambiaTipoReporte($event.value)">
+    <mat-option  [value]="1">Entregadas</mat-option>
+    <mat-option  [value]="2">No entregadas</mat-option>
+  </mat-select>
+</mat-form-field>
+
+</div>
+  <mat-drawer-container class="example-container">
+      <mat-drawer style="width: 30px; min-height: 1500px; background-color: rgb(255, 251, 251);" mode="side" opened></mat-drawer>
+      <hr>
+      <mat-drawer-content>
+
+          <table style="overflow:hidden;">
+              <tr>
+                <td style="width:85%">
+                  <div class="table">
+                    <div class="container-fluid"  style="overflow-y:scroll;">
+
+                      <table>
+                        <tr>
+                          <th colspan="3">
+
+                            <form #formFechas="ngForm">
+                              <table style="width: 40%;">
+                                <tr>
+                                  <th>
+                                    <label>Fecha inicial venta:</label>
+                                    <div class="form-group">
+                                      <input placeholder="DTU Fecha Inicial" type="date" class="form-control"
+                                        (change)="buscaUnidadesPorFechas(formFechas)" id="fechaInicialVenta" name="fechaInicialVenta"
+                                        [(ngModel)]="fechaInicialVenta1">
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <label>Fecha final venta:</label>
+                                    <div class="form-group">
+                                      <input type="date" class="form-control" (change)="buscaUnidadesPorFechas(formFechas)"
+                                        id="fechaFinalVenta" name="fechaFinalVenta" [(ngModel)]="fechaFinalVenta1">
+                            
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <label>DTU Fecha inicial:</label>
+                                    <div class="form-group">
+                                      <input placeholder="DTU Fecha Inicial" type="date" class="form-control"
+                                        (change)="buscaUnidadesPorFechas(formFechas)" id="fechaInicialDTU" name="fechaInicialDTU"
+                                        [(ngModel)]="fechaInicialDTU1">
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <label>DTU Fecha final:</label>
+                                    <div class="form-group">
+                                      <input type="date" class="form-control" (change)="buscaUnidadesPorFechas(formFechas)"
+                                        id="fechaFinalDTU" name="fechaFinalDTU" [(ngModel)]="fechaFinalDTU1">
+                            
+                                    </div>
+                                  </th>
+                                </tr>
+                              </table>
+                            </form>
+
+                          </th>
+                            <th scope="col">
+                              <form  #formActivationRequestSearch="ngForm">
+                              <mat-form-field>
+                             <input (change)="busquedaPorTexto(formActivationRequestSearch)" matInput  placeholder="VIN, Pedido, No Factura, cliente, RFC Cliente, Aplicación, Modelo, Motor" id="formBusquedaVIN" name="formBusquedaVIN"  [(ngModel)]="vinBus2">
+                            </mat-form-field>
+                          </form>
+                          </th>
+                            <th scope="col">                      
+                              <mat-form-field appearance="fill">
+                              <mat-label>Clasificación corporativa</mat-label>
+                              <mat-select (selectionChange)="buscaPorClasCorpo($event.value)">
+                                <mat-option 
+                                *ngFor="let clasCorpo of ListClasCorpoCombo" 
+                                [value]="clasCorpo.idClasCorp">
+                                {{clasCorpo.nombre}}
+                              </mat-option>
+        
+                              </mat-select>
+                            </mat-form-field></th> 
+                            <th>
+                              <mat-form-field appearance="fill">
+                                <mat-label>Distribuidor</mat-label>
+                                <mat-select  
+                                  (selectionChange)="getLocalidadesByDistribuidor($event.value)" >
+                                  <mat-option 
+                                  *ngFor="let distribubidor of ListDistribuidoresCombo" 
+                                  [value]="distribubidor.gfx">
+                                  {{distribubidor.strNombreDealer}}
+                                </mat-option>
+          
+                                </mat-select>
+                              </mat-form-field>
+          
+                            </th>
+          
+                            <th>
+                              <mat-form-field appearance="fill">
+                                <mat-label>Sucursales</mat-label>
+                                <mat-select  
+                                (selectionChange)="getLocalidades($event.value)">
+                                  <mat-option 
+                                  *ngFor="let localidad of ListLocalidadesCombo" 
+                                  [value]="localidad.idlocalidad">
+                                  {{localidad.strNombreLocalidad}}
+                                </mat-option>
+          
+                                </mat-select>
+                              </mat-form-field>
+          
+                            </th>
+
+                        </tr>
+                    </table>
+
+                    <table>
+                      <tr>
+                          <td><mat-paginator style="font-size:x-small;" [length]="ListUnidadesEncontradas.length" [pageSize]="50" 
+                              (page)="handlePageRepVentas($event)">
+                            </mat-paginator>
+                          </td>
+                          <td>
+                            <button (click)="ExportTOExcelUnidades()" type="button" class="MyButton" data-toggle="modal"><mat-icon
+                                    class="material-icons" style="color:green;">calculate</mat-icon>Excel</button>
+                        </td>                
+                      </tr>
+                  </table>
+  
+                      <table style="width:95%;" class="table">
+                          <thead >
+                            <tr>
+                              <th scope="col">VIN</th>
+                              <th scope="col">Clasificación corporativa</th>
+                              <th scope="col">Modelo</th>
+                              <th scope="col">GFX</th>
+                              <th scope="col">Distribuidor</th>
+                              <th scope="col">Localidad venta</th>
+                              <th scope="col">Nombre del cliente</th>    
+                              <th scope="col">RFC cliente</th>
+                              <th scope="col">Número de motor</th>  
+                              <th scope="col">Motor</th>   
+                              <th scope="col">Fecha Venta DS</th>
+                              <th scope="col">Fecha captura DTU</th>
+                              <th scope="col">Días diferencia ventas - Cap DTU</th>
+                              <th scope="col">Fecha DTU</th>        
+                              <th scope="col">Días diferencia</th> 
+                              <th scope="col">Fecha pago</th> 
+                              <th scope="col">Días diferencia venta - pago</th> 
+                              <th scope="col">Fecha facturación</th> 
+                              <th scope="col">Días fecha venta-fecha facturación</th>                
+                            </tr>
+                          </thead>
+                          <tbody>
+                              <tr *ngFor="let item of ListUnidadesEncontradas | pagination: page_size:page_number">
+                                  <td>{{ item.vin }}</td>
+                                  <td>{{ item.claseCorporativa }}</td>
+                                  <td>{{ item.modelo }}</td>
+                                  <td>{{ item.idDealer }}</td>
+                                  <td>{{ item.descDistribuidor }}</td>
+                                  <td>{{ item.alias }}</td>
+                                  <td>{{ item.nombreDeCliente }}</td>
+                                  <td>{{ item.strRFCCliente }}</td>
+                                  <td>{{ item.numeroDeMotor }}</td>      
+                                  <td>{{ item.nombreMotor }}</td>
+                                  <td>{{ item.fchdeVenta}}</td>   
+                                  <td>{{ item.fechaCapturaDTU}}</td>
+                                  <td>{{ item.diasFechaVentaFechaCapturaDTU }}</td>
+                                  <td>{{ item.actual_DTU_Date }}</td>
+                                  <td>{{ item.nuDiasDif }}</td>
+                                  <td>{{ item.fECHA_PAGADO }}</td>
+                                  <td>{{ item.diasFechaVentaFechaPagado }}</td>
+                                  <td>{{ item.fH_FACTURACION}}</td>
+                                  <td>{{ item.diasFechaVentaFechaFacturacion }}</td>
+                                </tr>
+                      </table>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+          </table>
+      </mat-drawer-content>
+  </mat-drawer-container>
+  
+  
+  <div hidden="true" class="table-responsive" #tableunidadesEntregadas>
+      <table class="table">
+        <tr>
+            <th scope="col">VIN</th>
+            <th scope="col">Clasificación corporativa</th>
+            <th scope="col">Modelo</th>
+            <th scope="col">GFX</th>
+            <th scope="col">Distribuidor</th>
+            <th scope="col">Localidad venta</th>
+            <th scope="col">Nombre del cliente</th>    
+            <th scope="col">RFC cliente</th>
+            <th scope="col">Número de motor</th>  
+            <th scope="col">Motor</th>   
+            <th scope="col">Fecha Venta DS</th>
+            <th scope="col">Fecha captura DTU</th>
+            <th scope="col">Días diferencia ventas - Cap DTU</th>
+            <th scope="col">Fecha DTU</th>        
+            <th scope="col">Días diferencia</th> 
+            <th scope="col">Fecha pago</th> 
+            <th scope="col">Días diferencia venta - pago</th> 
+            <th scope="col">Fecha facturación</th> 
+            <th scope="col">Días fecha venta-fecha facturación</th>   
+          
+        </tr>
+        <tr *ngFor="let item of ListUnidadesEncontradas;">
+            <td>{{ item.vin }}</td>
+            <td>{{ item.claseCorporativa }}</td>
+            <td>{{ item.modelo }}</td>
+            <td>{{ item.idDealer }}</td>
+            <td>{{ item.descDistribuidor }}</td>
+            <td>{{ item.alias }}</td>
+            <td>{{ item.nombreDeCliente }}</td>
+            <td>{{ item.strRFCCliente }}</td>
+            <td>{{ item.numeroDeMotor }}</td>      
+            <td>{{ item.nombreMotor }}</td>
+            <td>{{ item.fchdeVenta }}</td>   
+            <td>{{ item.fechaCapturaDTU}}</td>
+            <td>{{ item.diasFechaVentaFechaCapturaDTU }}</td>
+            <td>{{ item.actual_DTU_Date }}</td>
+            <td>{{ item.nuDiasDif }}</td>
+            <td>{{ item.fECHA_PAGADO }}</td>
+            <td>{{ item.diasFechaVentaFechaPagado }}</td>
+            <td>{{ item.fH_FACTURACION }}</td>
+            <td>{{ item.diasFechaVentaFechaFacturacion }}</td>
+  
+        </tr>
+      </table>
+    </div>

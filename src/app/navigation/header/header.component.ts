@@ -9,6 +9,7 @@ import {UnidadesService} from '../../services/unidades.service';
 import { UnidadesComponent,MasiveTrasladosComponent, TransferenciasComponent,TrasladosDialogComponent,PublicarRedComponent } from '../../unidades/unidades.component';
 import { PageEvent } from '@angular/material/paginator';
 import * as XLSX from 'xlsx'; 
+import {MatSidenav} from '@angular/material/sidenav';
 
 @Component({
     selector: 'app-header',
@@ -17,8 +18,8 @@ import * as XLSX from 'xlsx';
 })
 export class HeaderComponent implements OnInit {
 
-    @Output() public sidenavToggle = new EventEmitter();
-
+  @Output() public sidenavToggle = new EventEmitter();
+  
     constructor(public dialog: MatDialog
                 ,public unidadesServices: UnidadesService) { }
 
@@ -34,6 +35,10 @@ export class HeaderComponent implements OnInit {
     ngOnInit() {
 
     }
+
+    public onToggleSidenav = () => {
+      this.sidenavToggle.emit();
+  } 
 
     openDialogListadoVIN(form:NgForm){
         this.strBusquedaGral = form.value.formBusquedaGral;

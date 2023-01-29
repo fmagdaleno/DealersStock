@@ -11,5 +11,5 @@ a {
 .nav-caption {
   display: inline-block;
   padding-left: 6px;
-  z-index: -1;
+  z-index: -1; 
 }

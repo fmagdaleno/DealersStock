@@ -1,74 +1,25 @@
 <div class="main-content">
 
   <div class="cabecera">
-    <!--<mat-icon>code</mat-icon>Subir XML
-    {{this.listModelosTemp | json}}-->
-    <table>
-      <tr>
-
-        <td>
-          <button class="MyButton"  type="button" (click)="reagrupaIOnventario(1)" ><mat-icon class="material-icons color_white">group_work</mat-icon>VIN</button>
-      </td>
-      <td>
-        <button  class="MyButton"  type="button" (click)="reagrupaIOnventario(2)" ><mat-icon class="material-icons color_white">group_work</mat-icon>Clas. corporativa</button>
-      </td>
-      <td>
-        <button  class="MyButton"  type="button" (click)="reagrupaIOnventario(3)" ><mat-icon class="material-icons color_white">group_work</mat-icon>Antigüedad</button>
-      </td>
-      <td>
-        <button  class="MyButton"  type="button" (click)="buscadatos(true)" ><mat-icon class="material-icons color_white">compare_arrows</mat-icon>Pendiente traslado / traspaso</button>
-      </td>
-      <!--<td *ngIf="intTipoBusqueda == 1"><mat-icon style="color:black;" class="material-icons color_white">search</mat-icon><input  matInput placeholder="VIN,Modelo,Clasificación,Motor" id="idBusquedaVIN" name="idBusquedaVIN" class="form-control"  [(ngModel)]="vinBus"></td>-->
-      
-      <td *ngIf="intTipoBusqueda == 2 || intTipoBusqueda == 1">               
-        <form  #formActivationRequestSearch="ngForm">
-          <mat-icon style="color:black;" class="material-icons color_white">search</mat-icon>
-         <input  (change)="busquedaPorTexto(20,1,' ', ' ',formActivationRequestSearch)" matInput placeholder="VIN,Modelo,Clasificación,Motor" id="formBusqueda" name="formBusqueda" class="form-control"  [(ngModel)]="vinBus2">
-       </form>
-       </td>
-      
-      <td>
-        <button class="MyButton"  type="button" (click)="buscadatos(false)" ><mat-icon class="material-icons" style="color:black;">loop</mat-icon>Recargar inventario</button>
-      </td>
-      <td>
-        <mat-form-field appearance="fill">
-          <mat-label>Visualizar</mat-label>
-          <mat-select  
-            multiple 
-            (selectionChange)="muestraColumnas($event.value)" 
-            [(ngModel)]="selectedObjects">
-            <mat-option 
-            *ngFor="let columna of columnasList" 
-            [value]="columna.value">
-             {{columna.label}}
-          </mat-option>
-
-          </mat-select>
-        </mat-form-field>
-      </td>
-      <td>
-        <button   (click)="ExportTOExcelUnidades()" type="button" class="MyButton"  data-toggle="modal"><mat-icon class="material-icons" style="color:green;">calculate</mat-icon>Excel</button>
-      </td>
-
-      <td>
-        <!--<mat-form-field appearance="fill"> 
-          <mat-label>Visualizar</mat-label>
-          <mat-select [formControl]="toppings" multiple>
-            <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping}}</mat-option>
-          </mat-select>
-        </mat-form-field>-->
-
-      </td>
-    </tr>
-    </table>
-
+    <h3 style="color: orange;">Inventario</h3>
     <hr>
   </div>
   
   <mat-drawer-container class="example-container">
-    <mat-drawer style="width: 15%; background-color: rgb(234, 233, 233);" mode="side" opened> Inventario</mat-drawer>
+    <mat-drawer style="width: 200px; min-height: 1000px; background-color: rgb(255, 251, 251);" mode="side" opened> 
+      <a mat-list-item (click)="buscadatos(false)"> <mat-icon style="color: orange;">loop</mat-icon> <span class="nav-caption"> Recargar inventario</span></a>
+      <P></P>
+      <a mat-list-item (click)="reagrupaIOnventario(1)"> <mat-icon style="color: orange;">group_work</mat-icon> <span class="nav-caption"> VIN</span></a>
+      <P></P>
+      <a mat-list-item (click)="reagrupaIOnventario(2)"> <mat-icon style="color: orange;">group_work</mat-icon> <span class="nav-caption"> Clas. corporativa</span></a>
+      <P></P>
+      <a mat-list-item (click)="reagrupaIOnventario(3)"> <mat-icon style="color: orange;">group_work</mat-icon> <span class="nav-caption"> Antigüedad</span></a>
+      <P></P>
+      <a mat-list-item (click)="buscadatos(true)"> <mat-icon style="color: orange;">compare_arrows</mat-icon> <span class="nav-caption"> Pend. traslado / traspaso</span></a>
+
+    </mat-drawer>
     <hr>
-    <mat-drawer-content>
+    <mat-drawer-content style="min-height: 1000px;">
       
       <table style="overflow:hidden;">
         <tr>
@@ -152,27 +103,56 @@
                       </mat-select>
                     </mat-form-field>
                     </td>
-  
+                    <td>
+                      <mat-form-field appearance="fill">
+                        <mat-label>Visualizar</mat-label>
+                        <mat-select  
+                          multiple 
+                          (selectionChange)="muestraColumnas($event.value)" 
+                          [(ngModel)]="selectedObjects">
+                          <mat-option 
+                          *ngFor="let columna of columnasList" 
+                          [value]="columna.value">
+                           {{columna.label}}
+                        </mat-option>
+              
+                        </mat-select>
+                      </mat-form-field>
+                    </td>
                   </tr>
                   <tr>
                     <td>
-                      <button class="MyButton"  type="button" (click)="openDialogMasiveTraspasos(ListUnidades)"><mat-icon class="material-icons color_white">compare_arrows</mat-icon>Traspasar entre sucursales</button>
+
+                      <form  #formActivationRequestSearch="ngForm">
+                        <mat-form-field>
+
+                       <input  (change)="busquedaPorTexto(20,1,' ', ' ',formActivationRequestSearch)" matInput placeholder="VIN,Modelo,Clasificación,Motor" id="formBusqueda" name="formBusqueda"  [(ngModel)]="vinBus2">
+                      </mat-form-field>
+                     </form>
+                    </td>
+                    <td>
+                      <button class="MyButton"  type="button" (click)="openDialogMasiveTraspasos(ListUnidades)"><mat-icon>compare_arrows</mat-icon>Traspasar entre sucursales</button>
                       
                     </td>
                     <td>
-                      <button  class="MyButton"  type="button" (click)="openRegistrarVenta(ListUnidades)"><mat-icon class="material-icons color_white">assignment</mat-icon>Registrar venta</button>
+                      <button  class="MyButton"  type="button" (click)="openRegistrarVenta(ListUnidades)"><mat-icon >assignment</mat-icon>Registrar venta</button>
                     </td>
                     <td>
-                      <button  class="MyButton"  type="button" (click)="openDialogMasiveTransferencias(ListUnidades)"><mat-icon class="material-icons color_white">redo</mat-icon>Transferir</button>
+                      <button  class="MyButton"  type="button" (click)="openDialogMasiveTransferencias(ListUnidades)"><mat-icon >redo</mat-icon>Transferir</button>
                     </td>
                     <td>
-                      <button  class="MyButton"  type="button" (click)="openPublicadosRed(ListUnidades, '')"><mat-icon class="material-icons color_white">publish</mat-icon>Publicar a la red</button>
+                      <button  class="MyButton"  type="button" (click)="openPublicadosRed(ListUnidades, '')"><mat-icon >publish</mat-icon>Publicar a la red</button>
                     </td>
-                    <td><mat-paginator style="font-size:x-small;" *ngIf="intTipoBusqueda == 1" [length]="ListUnidades.length" [pageSize]="20" 
-                      (page)="handlePageUnidadesVIN($event)">
-                    </mat-paginator>
-                  </td>
-                  </tr>
+                    <tr>
+                      <td colspan="5"><mat-paginator style="font-size:x-small;" *ngIf="intTipoBusqueda == 1" [length]="ListUnidades.length"
+                          [pageSize]="20" (page)="handlePageUnidadesVIN($event)">
+                        </mat-paginator>
+                      </td>
+                      <td>
+                        <button (click)="ExportTOExcelUnidades()" type="button" class="MyButton" data-toggle="modal"><mat-icon
+                            class="material-icons" style="color:green;">calculate</mat-icon>Excel</button>
+                      </td>
+                    </tr>
                 </table>
                 <!--busqueda por Clase y Modelo--> 
                 <table  *ngIf="intTipoBusqueda == 2"> 

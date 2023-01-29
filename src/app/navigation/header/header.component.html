@@ -1,15 +1,17 @@
-<mat-toolbar  style="background-color:white">
-  <!--<div>
-   <button mat-icon-button (click)="onToggleSidenav()"> 
+
+<mat-toolbar  style="background-color:white"> 
+  <div>
+    <button mat-icon-button (click)="onToggleSidenav()">
       <mat-icon>menu</mat-icon>
     </button>
-  </div>-->
+  </div>
   <div>
     <img width="40"
          alt="Angular Logo"
          src="assets/navistar-logo.ico" />
-    <a style="color:orange;" routerLink="/home">Dealer Stock</a>
+    <a style="color:black;" routerLink="/home">Dealer Stock</a>
   </div>
+
 
   <div class="row" style="width:100%; text-align:right" >
     <div *ngIf="!minimoRequerido">
@@ -26,7 +28,7 @@
       {{UsuarioFirmado.nombreCompleto}} -->
     </div>
     <div class="col-md-4" >
-      
+
     </div>
       <!--<div class="col-md-1" >
       <button 
@@ -37,6 +39,9 @@
   </div>
 
 </mat-toolbar >
+
+
+
 
 
 

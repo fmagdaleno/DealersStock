@@ -1,0 +1,204 @@
+<div class="cabecera" style="text-align: right;">
+  <h3 style="color: orange;">Reporte de ventas </h3>
+  <hr>
+</div>
+<mat-drawer-container class="example-container">
+    <mat-drawer style="width: 50px; min-height: 1500px; background-color: rgb(255, 251, 251);" mode="side" opened></mat-drawer>
+    <hr>
+    <mat-drawer-content>
+        <table>
+            <tr>
+                <td><mat-paginator style="font-size:x-small;" [length]="ListReporteVentas.length" [pageSize]="50" 
+                    (page)="handlePageRepVentas($event)">
+                  </mat-paginator>
+                </td>
+                <td>
+                  <button (click)="ExportTOExcelUnidades()" type="button" class="MyButton" data-toggle="modal"><mat-icon
+                          class="material-icons" style="color:green;">calculate</mat-icon>Excel</button>
+              </td>                
+            </tr>
+        </table>
+        <table style="overflow:hidden;">
+            <tr>
+              <td style="width:85%">
+                <div class="table">
+                  <div class="container-fluid"  style="overflow-y:scroll;">
+                    <table>
+                        <tr>
+                          <th colspan="4">
+
+                            <form #formFechas="ngForm">
+                              <table style="width: 40%;">
+                                <tr>
+                                  <th>
+                                    <label>Inicio facturación:</label>
+                                    <div class="form-group">
+                                      <input placeholder="DTU Fecha Inicial" type="date" class="form-control"
+                                        (change)="buscaUnidadesPorFechas(formFechas)" id="fechaInicial" name="fechaInicial"
+                                        [(ngModel)]="fechaInicial1">
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <label>Final facturación:</label>
+                                    <div class="form-group">
+                                      <input type="date" class="form-control" (change)="buscaUnidadesPorFechas(formFechas)"
+                                        id="fechaFinal" name="fechaFinal" [(ngModel)]="fechaFinal1">
+                            
+                                    </div>
+                                  </th>
+                                </tr>
+                              </table>
+                            </form>
+
+                          </th>
+                            <th scope="col">
+                              <form  #formActivationRequestSearch="ngForm">
+                              <mat-form-field>
+                             <input (change)="busquedaPorTexto(formActivationRequestSearch)" matInput  placeholder="VIN, Pedido, No Factura, cliente, RFC Cliente, Aplicación, Modelo, Motor" id="formBusquedaVIN" name="formBusquedaVIN"  [(ngModel)]="vinBus2">
+                            </mat-form-field>
+                          </form>
+                          </th>
+                            <th scope="col">                      
+                              <mat-form-field appearance="fill">
+                              <mat-label>Clasificación corporativa</mat-label>
+                              <mat-select (selectionChange)="buscaPorClasCorpo($event.value)">
+                                <mat-option 
+                                *ngFor="let clasCorpo of ListClasCorpoCombo" 
+                                [value]="clasCorpo.idClasCorp">
+                                {{clasCorpo.nombre}}
+                              </mat-option>
+        
+                              </mat-select>
+                            </mat-form-field></th> 
+                            <th>
+                              <mat-form-field appearance="fill">
+                                <mat-label>Distribuidor</mat-label>
+                                <mat-select  
+                                  (selectionChange)="getLocalidadesByDistribuidor($event.value)" >
+                                  <mat-option 
+                                  *ngFor="let distribubidor of ListDistribuidoresCombo" 
+                                  [value]="distribubidor.gfx">
+                                  {{distribubidor.strNombreDealer}}
+                                </mat-option>
+          
+                                </mat-select>
+                              </mat-form-field>
+          
+                            </th>
+          
+                            <th>
+                              <mat-form-field appearance="fill">
+                                <mat-label>Sucursales</mat-label>
+                                <mat-select  
+                                (selectionChange)="getLocalidades($event.value)">
+                                  <mat-option 
+                                  *ngFor="let localidad of ListLocalidadesCombo" 
+                                  [value]="localidad.idlocalidad">
+                                  {{localidad.strNombreLocalidad}}
+                                </mat-option>
+          
+                                </mat-select>
+                              </mat-form-field>
+          
+                            </th>
+                          <th>
+                            <mat-form-field appearance="fill">
+                              <mat-label>Tipo</mat-label>
+                            <mat-select   name="formTipoPedido"  #tipoPedidoValue placeholder="Tipo"  (selectionChange)="buscaPorTipoPedido($event.value)">
+                              <mat-option  [value]="0">Todos</mat-option>
+                              <mat-option  [value]="1">Stock</mat-option>
+                              <mat-option  [value]="2">Flotas</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </th>
+
+                        </tr>
+                    </table>
+
+                    <table style="width:95%;" class="table">
+                        <thead >
+                          <tr>
+                            <th scope="col">VIN</th>
+                            <th scope="col">Clasificación corporativa</th> 
+                            <th scope="col">Disribuidor</th>
+                            <th scope="col">Pedido</th>
+                            <th scope="col">No. Factura</th>
+                            <th scope="col">Fecha facturación</th>
+                            <th scope="col">Fecha emisión factura</th>
+                            <th scope="col">Cliente final</th>    
+                            <th scope="col">RFC cliente</th>
+                            <th scope="col">Aplicación</th>  
+                            <th scope="col">Modelo</th>   
+                            <th scope="col">Motor</th>
+                            <th scope="col">Sucursal</th>
+                            <th scope="col">Tipo pedido</th>
+                            <th scope="col">Tipo venta</th>                       
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of ListReporteVentas | pagination: page_size:page_number">
+                                <td>{{ item.vin }}</td>
+                                <td>{{ item.claseCorporativa }}</td>
+                                <td>{{ item.strNombreDealer }}</td>
+                                <td>{{ item.strPedido }}</td>
+                                <td>{{ item.noFactura }}</td>
+                                <td>{{ item.fchFacturacion}}</td>
+                                <td>{{ item.fechaFactura}}</td>
+                                <td>{{ item.strClienteFinal }}</td>
+                                <td>{{ item.strRFCCliente }}</td>      
+                                <td>{{ item.aplicacion }}</td>
+                                <td>{{ item.modelo }}</td>   
+                                <td>{{ item.motor }}</td>
+                                <td>{{ item.strLocalidad }}</td>
+                                <td>{{ item.strTipoPedido }}</td>
+                                <td>{{ item.strTipoVenta }}</td>
+                              </tr>
+                    </table>
+                  </div>
+                </div>
+              </td>
+            </tr>
+        </table>
+    </mat-drawer-content>
+</mat-drawer-container>
+
+
+<div hidden="true" class="table-responsive" #tableRepVentas>
+    <table class="table">
+      <tr>
+        <th scope="col">VIN</th>
+        <th scope="col">Clasificación corporativa</th>
+        <th scope="col">Disribuidor</th>
+        <th scope="col">Pedido</th>
+        <th scope="col">No. Factura</th>
+        <th scope="col">Fecha factura</th>
+        <th scope="col">Cliente final</th>    
+        <th scope="col">RFC cliente</th>
+        <th scope="col">Aplicación</th>  
+        <th scope="col">Modelo</th>   
+        <th scope="col">Motor</th>
+        <th scope="col">Sucursal</th>
+        <th scope="col">Tipo pedido</th>
+        <th scope="col">Tipo venta</th>   
+        
+      </tr>
+      <tr *ngFor="let item of ListReporteVentas;">
+        <td>{{ item.vin }}</td>
+        <td>{{ item.claseCorporativa }}</td>
+        <td>{{ item.strNombreDealer }}</td>
+        <td>{{ item.strPedido }}</td>
+        <td>{{ item.noFactura }}</td>
+        <td>{{ item.fchFacturacion }}</td>
+        <td>{{ item.fechaFactura}}</td>
+        <td>{{ item.strClienteFinal }}</td>
+        <td>{{ item.strRFCCliente }}</td>      
+        <td>{{ item.aplicacion }}</td>
+        <td>{{ item.modelo }}</td>   
+        <td>{{ item.motor }}</td>
+        <td>{{ item.strLocalidad }}</td>
+        <td>{{ item.strTipoPedido }}</td>
+        <td>{{ item.strTipoVenta }}</td>
+
+      </tr>
+    </table>
+  </div>

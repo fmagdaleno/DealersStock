@@ -15,7 +15,7 @@ import { UnidadesComponent,MasiveTrasladosComponent, TransferenciasComponent,Tra
         ,TransferenciasAceptacionComponent } from './unidades/unidades.component';
 import {MatIconModule} from '@angular/material/icon';
 import {MatToolbarModule} from '@angular/material/toolbar';
-//import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
+import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './navigation/header/header.component';
@@ -44,6 +44,9 @@ import { MatRadioModule } from '@angular/material/radio';
 import { DialogOverviewExampleDialog } from './../../src/app/capturaVenta/captura-ventaxml.component';
 import { ListadoUnidadesDialogComponent,DetalleUnidadDialogComponent } from './navigation/header/header.component';
 import { DialogoConfirmacionComponent } from './dialogo-confirmacion/dialogo-confirmacion.component';
+import { ReporteVentasComponent } from './reporte-ventas/reporte-ventas.component';
+import { MatListModule } from '@angular/material/list';
+import { UnidadesEntregadasComponent } from './unidades-entregadas/unidades-entregadas.component';
 
 
 
@@ -80,7 +83,26 @@ const routes: Routes = [
       }
   ]
 },
-
+{
+  path: 'ReporteVentasentas',
+  component: ReporteVentasComponent,
+  children: [
+      { 
+          path: 'ReporteVentasentas',
+          component: ReporteVentasComponent 
+      }
+  ]
+},
+{
+  path: 'UnidadesEntregadas',
+  component: UnidadesEntregadasComponent,
+  children: [
+      { 
+          path: 'UnidadesEntregadas',
+          component: UnidadesEntregadasComponent 
+      }
+  ]
+},
 ];
 
 
@@ -104,7 +126,10 @@ const routes: Routes = [
     RegistrarVentaDialogComponent,
     ListadoUnidadesPublicadasComponent,
     TransferenciasAceptacionComponent,
-    DialogoConfirmacionComponent
+    DialogoConfirmacionComponent,
+    ReporteVentasComponent,
+    SidenavListComponent,
+    UnidadesEntregadasComponent
 
 
   ],
@@ -135,10 +160,12 @@ const routes: Routes = [
     MatDatepickerModule,
     MatNativeDateModule, 
     MatRadioModule,
-    MatDialogModule
+    MatDialogModule,
+    MatListModule
 ],
 exports: [
     MatDialogModule,
+    MatSidenavModule 
 ],
   providers: [{ 
     provide:HTTP_INTERCEPTORS,

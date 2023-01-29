@@ -180,4 +180,21 @@ export class UnidadesService {
     .pipe(map(data => data));
   }
 
+
+  //////////////////////////////////////////////////////////REPORTE DE VENTAS
+  getReporteVentas(strBusqueda: string, idCorp: number, intGFX:any, fechaInicio:string, fechaFin:string
+    ,strPedido:string,strTipoVenta: string){
+    const url_api_Request = environment.hostUrl + '/vw_Unidades/GetReporteVentas/' + strBusqueda + '/' + idCorp + '/' + intGFX + '/' 
+    + fechaInicio + '/' + fechaFin + '/' + strPedido + '/' + strTipoVenta + '/' + window[<any>'varGlobal_User'] + '/';
+    return this.http.get<any[]>(url_api_Request); 
+  }
+
+  getunidadesEntregadas(strBusqueda: string, idCorp: number, intGFX:any, fechaInicio:Date | null, fechaFin:Date | null, boolEntregadas: boolean
+                        ,fechaInicioDTU:Date | null,fechafINDTU:Date | null){
+    const url_api_Request = environment.hostUrl + '/vw_Unidades/GetUnidadesEntregadas/' + strBusqueda + '/' + idCorp + '/' + intGFX + '/' 
+    + fechaInicio + '/' + fechaFin + '/'  + window[<any>'varGlobal_User'] + '/' + boolEntregadas + '/'+ fechaInicioDTU + '/' + fechafINDTU + '/';
+    return this.http.get<any[]>(url_api_Request); 
+  }
+
+
 }
