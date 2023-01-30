@@ -57,7 +57,7 @@ export interface DialogData {
     archivo: any[] = [];
     fac: factura = new factura();
     xm: Xml = new Xml();
-    ntUser: string = 'YYYAXC4';
+    ntUser: any = window[<any>'varGlobal_User'];
     public uploader: FileUploader = new FileUploader({ url: environment.hostUrl + '/Facturas/LeerXML' });
     public hasBaseDropZoneOver: boolean = false;
     public hasAnotherDropZoneOver: boolean = false;

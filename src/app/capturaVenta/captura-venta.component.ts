@@ -93,7 +93,7 @@ export class CapturaVentaComponent implements OnInit {
     fecEst = new Date();
     fecDTU = new Date();
     bFinan: boolean=false;
-    ntUser: string = 'YYYAXC4';
+    ntUser: any = window[<any>'varGlobal_User'];
     bCyt: boolean=false;
     tipcli: number = 0;
 
@@ -156,7 +156,7 @@ export class CapturaVentaComponent implements OnInit {
       if(result!=undefined){
         this.cancelar();
         this.xm = result;
-        this.bCyt = this.xm.vin.toUpperCase().startsWith('3H');
+        this.bCyt = this.xm.vin.toUpperCase().startsWith('3J');
         this.rfcReceptorFrmCtl.setValue(this.xm.rfcReceptor);
         this.razonFormControl.setValue(this.xm.nombreReceptor);
         this.getSucursales();

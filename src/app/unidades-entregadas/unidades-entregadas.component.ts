@@ -132,6 +132,8 @@ this.strBusqueda = ' ';
 
     buscaUnidadesPorFechas(form:NgForm): void{
 
+      //alert(form.value.fechaInicialVenta);
+
       this.fechaInicialVenta = form.value.fechaInicialVenta;
       this.fechaFinalVenta = form.value.fechaFinalVenta;
       this.fechaInicialDTU = form.value.fechaInicialDTU;
@@ -139,10 +141,10 @@ this.strBusqueda = ' ';
 
       //alert(this.fechaInicialVenta) 
 
-   if(this.fechaInicialVenta = null){this.fechaInicialVenta = '1900-01-01'}
-   if(this.fechaFinalVenta = null){this.fechaFinalVenta = '1900-01-01'}
-   if(this.fechaInicialDTU = null){this.fechaInicialDTU = '1900-01-01'}
-   if(this.fechaFinalDTU = null){this.fechaFinalDTU = '1900-01-01'}
+   if(this.fechaInicialVenta == null){this.fechaInicialVenta = '1900-01-01'}
+   if(this.fechaFinalVenta == null){this.fechaFinalVenta = '1900-01-01'}
+   if(this.fechaInicialDTU == null){this.fechaInicialDTU = '1900-01-01'}
+   if(this.fechaFinalDTU == null){this.fechaFinalDTU = '1900-01-01'}
 
       this.getUnidadesEntregadas();
     }
